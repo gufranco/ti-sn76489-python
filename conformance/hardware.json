@@ -1,0 +1,225 @@
+{
+  "note": "What Texas Instruments printed about the SN76489AN and the SN76494N, fact by fact, with the sentence each was read from. The data sheet has no printed page numbers, so a page here is the page of the scan, counted from 1. Facts the data sheet does not print sit under notStated, each naming where its value came from and the measurement that would settle it. Where two sources part, divergences.json says which way this package went.",
+  "authority": {
+    "order": [
+      "hardware.json facts, for anything Texas Instruments printed in the SN76489AN data sheet",
+      "the SG-1000 cartridge library, for which registers, byte forms, noise settings and write spacing real software reaches, counted by conformance/census.py",
+      "SMS Power's SN76489 notes, for the noise shift register, from data taken on an SC-3000H carrying a discrete SN76489AN",
+      "MAME, for behaviour the data sheet leaves unstated, counted with SMS Power as one lineage for the noise register",
+      "nothing else"
+    ],
+    "why": "The data sheet is the only manufacturer document and it is a scan read twice, so it decides every fact it prints. It does not describe the shift register, the power-on state, a zero period or a write made before READY rises, so those rest on sources that are leads rather than authorities and are marked verified false. The cartridge library decides which of those corners real software reaches, which is what says how much each one matters.",
+    "comparedAgainst": {
+      "runner": "conformance/census.py",
+      "what": "Every SG-1000 image in a real library, booted on ti-tms9918-python's board behind the zilog-z80-python processor with this part on the sound port, with every register, byte form, noise setting and early write it makes counted."
+    }
+  },
+  "part": "SN76489AN and SN76494N sound generators",
+  "verified": true,
+  "documents": {
+    "dataSheet": {
+      "publisher": "Texas Instruments",
+      "title": "SN76489AN Digital Complex Sound Generator data sheet",
+      "date": "undated",
+      "readOn": "2026-10-17",
+      "retrievedFrom": "https://wiki.console5.com/tw/images/b/b0/SN76489.pdf",
+      "sha256": "ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91",
+      "bytes": 342317,
+      "pages": 9,
+      "file": "SN76489AN_Digital_Complex_Sound_Generator_Data_Sheet.pdf",
+      "pageRule": "The sheet prints no page numbers, so a page here is the page of the scan, counted from 1.",
+      "howRead": "Read twice. The scan's text layer was read in full, 529 lines, and all nine pages were rendered at 110 dpi and read as images, because the text layer garbles words, figures and the tables. Every quote below is matched against the text layer flattened to letters and digits."
+    }
+  },
+  "facts": {
+    "prescale": {
+      "value": {
+        "sn76489an": 16,
+        "sn76494n": 2
+      },
+      "quote": "A \"divide-by-eight\" stage is deleted from the input circuitry and only 4 clock pulses are required to load the data, compared to 32 pulses for the SN76489AN",
+      "page": 1,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"],
+      "alsoRead": "Page 8 draws a divide-by-16 between the clock pin and the generators; page 9 marks it divide-by-2 on the SN76494N."
+    },
+    "loadClocks": {
+      "value": {
+        "sn76489an": 32,
+        "sn76494n": 4
+      },
+      "quote": "The SN76489AN requires approximately 32 clock cycles to load the data into the control register.",
+      "page": 4,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "ready": {
+      "value": "low from the write until the load completes",
+      "quote": "The open collector READY output is used to synchronize the microprocessor to this transfer",
+      "page": 4,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "toneCounter": {
+      "value": {
+        "bits": 10,
+        "decrementsPerInputClocks": 16
+      },
+      "quote": "This information is loaded into a 10 stage tone counter, which is decremented at a N/16 rate where N is the input clock frequency.",
+      "page": 2,
+      "document": "dataSheet",
+      "governs": ["sn76489an"],
+      "alsoRead": "The SN76494N's counter decrements at N/2, since page 1 deletes the divide-by-eight stage; see prescale."
+    },
+    "toneBorrow": {
+      "value": "toggles the flip-flop and reloads the counter",
+      "quote": "When the tone counter decrements to zero, a borrow signal is produced. This borrow signal toggles the frequency flip-flop and also reloads the tone counter.",
+      "page": 2,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "tonePeriod": {
+      "value": "a full cycle is twice the register's count of periods",
+      "quote": "Thus, the period of the desired frequency is twice the value of the period register.",
+      "page": 2,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "toneFields": {
+      "value": {
+        "frequencyBits": 10,
+        "attenuationBits": 4
+      },
+      "quote": "Each tone generator requires 10 bits of information to select the frequency and 4 bits of information to select the attenuation.",
+      "page": 3,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "attenuationMaximum": {
+      "value": 28,
+      "quote": "Multiple attenuation control bits may be true simultaneously. Thus, the maximum attenuation is 28 db.",
+      "page": 2,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"],
+      "alsoRead": "Table 1 on the same page weighs the four bits 16, 8, 4 and 2 dB, with all four set as off."
+    },
+    "noiseCleared": {
+      "value": true,
+      "quote": "Whenever the noise control register is changed, the shift register is cleared.",
+      "page": 2,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "noiseRates": {
+      "value": [512, 1024, 2048],
+      "quote": "The shift register will shift at one of four rates as determined by the two NF bits.",
+      "page": 2,
+      "document": "dataSheet",
+      "governs": ["sn76489an"],
+      "alsoRead": "Table 3 on page 3 lists N/512, N/1024, N/2048 and tone generator 3's output. It prints the first two rows' bits as 0 0 twice; see divergences.json. On the SN76494N the same three rates are N/64, N/128 and N/256, since page 1 deletes the divide-by-eight stage."
+    },
+    "noiseNeverLocks": {
+      "value": true,
+      "quote": "The feeback network has provisions to protect the shift register from being locked in the zero state.",
+      "page": 2,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "registerField": {
+      "value": {
+        "registers": 8,
+        "fieldBits": 3
+      },
+      "quote": "During all data transfers to the SN76489AN, the first byte contains a three bit field which determines the destination control register.",
+      "page": 3,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "latchedAddress": {
+      "value": true,
+      "quote": "The register address is latched on the chip, so the data will continue going into the same register.",
+      "page": 3,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "secondByte": {
+      "value": 6,
+      "quote": "This allows the 6 most significant bits to be quickly modified for frequency sweeps.",
+      "page": 3,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "reset": {
+      "value": "none: the pin table lists all sixteen pins and none is a reset, so reset() defines nothing and hands the part back as it was",
+      "quote": "No external connection should be made in this pin.",
+      "page": 5,
+      "document": "dataSheet",
+      "governs": ["sn76489an", "sn76494n"],
+      "alsoRead": "That sentence describes pin 9, the only pin not named; the other fifteen are the eight data lines, CE, WE, READY, CLOCK, AUDIO OUT, VCC and GND."
+    }
+  },
+  "notStated": {
+    "shiftRegister": {
+      "value": {
+        "bits": 15,
+        "whiteTaps": [0, 1],
+        "feedsInto": 14,
+        "clearedTo": 16384,
+        "output": 0
+      },
+      "verified": false,
+      "why": "The data sheet says only that the noise source is a shift register with exclusive OR feedback that cannot lock at zero.",
+      "source": "SMS Power, https://www.smspower.org/Development/SN76489, which gives this pattern for discrete SN76489AN parts from data Charles MacDonald took on an SC-3000H. MAME src/devices/sound/sn76496.cpp at 92f8878050f78c55c6961b688d4960b078150c6a builds the same sequence with two delay stages in front of the output; the two count as one lineage.",
+      "howToSettleIt": "Record the audio output of a discrete SN76489AN in white and periodic noise after a noise write, at a rate that resolves single shifts.",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "outputPhaseAfterReset": {
+      "value": "no delay stages: the first shift after a noise write already shows the cleared register's bit 0",
+      "verified": false,
+      "why": "The data sheet says nothing about the output's phase relative to the shift register.",
+      "source": "This package's reading of SMS Power. MAME emits two zeros first; see divergences.json.",
+      "howToSettleIt": "The same recording, aligned to the write strobe.",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "zeroPeriod": {
+      "value": 1024,
+      "verified": false,
+      "why": "The data sheet does not say what a period of 0 does. A 10-stage counter loaded with 0 borrows after 1,024 decrements, which is what this package models.",
+      "source": "The data sheet's counter, followed literally. MAME's sn76496.cpp lines 354 to 358 agree for TI parts.",
+      "howToSettleIt": "Measure the output period of a discrete SN76489AN with 0 written to a tone register.",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "toneThreeEdge": {
+      "value": "one shift on each rising toggle of tone 3's flip-flop",
+      "verified": false,
+      "why": "Table 3 says only that the fourth rate is tone generator 3's output.",
+      "source": "MAME's sn76496.cpp line 384 shifts at twice tone 3's period, which fixes the rate and not the edge; the edge is this package's choice.",
+      "howToSettleIt": "Record noise and tone 3 together with tone 3 attenuated to off, and align the shifts to tone 3's edges.",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "powerOn": {
+      "value": "every register, counter, flip-flop, the shift register and the latched address scrambled from a seed",
+      "verified": false,
+      "why": "The data sheet describes no reset and the part has no reset pin.",
+      "source": "SMS Power says discrete chips seem to start with random values; MAME clears them, with a note that this needs testing on other chips. The family rule is that nothing starts cleared.",
+      "howToSettleIt": "Power a discrete SN76489AN repeatedly with no write and record its output.",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "writeWhileLoading": {
+      "value": "applied at once, and READY's count starts again",
+      "verified": false,
+      "why": "The data sheet tells the processor to wait for READY and does not say what a write that does not wait does.",
+      "source": "MAME's sn76496.cpp line 392, which applies every write at once and restarts its READY timer.",
+      "howToSettleIt": "Write twice inside 32 input clocks on a discrete SN76489AN and read back which byte took effect.",
+      "governs": ["sn76489an", "sn76494n"]
+    },
+    "secondByteElsewhere": {
+      "value": "a second byte to an attenuation or noise register sets that register's four bits; to the noise register it also clears the shift register",
+      "verified": false,
+      "why": "The data sheet describes the second byte for frequency registers only.",
+      "source": "MAME's sn76496.cpp lines 370 to 387.",
+      "howToSettleIt": "Write a second byte after addressing each attenuation register and the noise register, and observe the output.",
+      "governs": ["sn76489an", "sn76494n"]
+    }
+  }
+}

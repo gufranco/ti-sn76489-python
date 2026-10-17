@@ -1,0 +1,13 @@
+---
+blank_issues_enabled: false
+contact_links:
+  - name: Where the TI data sheet is silent or contradicts itself
+    url: https://github.com/gufranco/ti-sn76489-python/blob/main/conformance/divergences.json
+    about: >-
+      Each disagreement is listed there with which way this package went and
+      what would settle it.
+  - name: What this package took from SMS Power and MAME
+    url: https://github.com/gufranco/ti-sn76489-python/blob/main/conformance/hardware.json
+    about: >-
+      Every value the data sheet does not print sits under notStated, with its
+      source and the measurement that would replace it.

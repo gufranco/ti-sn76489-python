@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+title: ti-sn76489-python
+message: >-
+  If you use this work, or the facts it was settled against, please cite it.
+type: software
+authors:
+  - given-names: Gustavo
+    family-names: Franco
+    alias: gufranco
+repository-code: https://github.com/gufranco/ti-sn76489-python
+url: https://github.com/gufranco/ti-sn76489-python
+abstract: >-
+  A model of the Texas Instruments SN76489AN and SN76494N sound generators, advanced one input clock at a time: the write interface and the READY handshake, the three tone generators, the noise generator and its shift register, and the attenuators. Every fact names the page of the TI data sheet it was read from, and every value the data sheet does not print names where it came from and the measurement that would settle it.
+keywords:
+  - texas-instruments
+  - sn76489an
+  - sn76494n
+  - sound-generator
+  - psg
+  - sg-1000
+  - hardware-model
+  - conformance
+license: MIT
+version: 0.0.0

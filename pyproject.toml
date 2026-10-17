@@ -1,0 +1,98 @@
+[build-system]
+requires = ["setuptools>=84.0.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sn76489"
+description = "The TI SN76489AN and SN76494N sound generators, modelled one input clock at a time and held to the TI data sheet."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+dynamic = ["version"]
+keywords = [
+  "texas-instruments",
+  "sn76489",
+  "sn76489an",
+  "sn76494",
+  "psg",
+  "sg-1000",
+  "retrocomputing",
+  "hardware-model",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: System :: Emulators",
+  "Typing :: Typed",
+]
+
+[project.urls]
+Homepage = "https://github.com/gufranco/ti-sn76489-python"
+Source = "https://github.com/gufranco/ti-sn76489-python"
+Issues = "https://github.com/gufranco/ti-sn76489-python/issues"
+
+[project.scripts]
+sn76489-doctor = "sn76489.doctor:main"
+
+[tool.setuptools]
+packages = ["sn76489"]
+
+[tool.setuptools.dynamic]
+version = { attr = "sn76489.version.VERSION" }
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["ti-tms9918-python"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF", "PL", "BLE", "C4", "N", "A", "T20", "PTH"]
+ignore = ["N818"]
+
+[tool.ruff.lint.per-file-ignores]
+"sn76489/environment.py" = ["BLE001", "T201"]
+"*.test.py" = ["PLR2004", "N999"]
+"conformance/*.py" = ["T201"]
+"conformance/census.py" = ["BLE001", "T201"]
+"sn76489/doctor.py" = ["BLE001", "PLC0415", "T201"]
+
+[tool.mypy]
+strict = true
+python_version = "3.12"
+warn_unreachable = true
+warn_no_return = true
+strict_equality = true
+extra_checks = true
+enable_error_code = [
+  "explicit-override",
+  "ignore-without-code",
+  "possibly-undefined",
+  "redundant-expr",
+  "truthy-bool",
+  "truthy-iterable",
+  "unused-awaitable",
+]
+files = ["sn76489", "conformance"]
+
+[[tool.mypy.overrides]]
+module = ["tms9918.*", "z80.*"]
+follow_imports = "skip"
+ignore_missing_imports = true
+
+[tool.coverage.run]
+source = ["sn76489", "conformance"]
+branch = true
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_also = [
+  'if __name__ == "__main__":',
+  'if TYPE_CHECKING:',
+  '^\s*\.\.\.$',
+  ': \.\.\.$',
+]

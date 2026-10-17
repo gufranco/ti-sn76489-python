@@ -1,0 +1,28 @@
+{
+  "note": "Every document this package is held to, by identity rather than by name. conformance/documents.py checks a copy you already hold and refuses anything whose digest does not match.",
+  "authority": {
+    "1": "A manufacturer document. What the maker of the hardware printed about it.",
+    "2": "A recording taken off real hardware. Nothing here occupies that rung.",
+    "3": "Independent research, for what no manufacturer printed."
+  },
+  "whyNotCarriedHere": "This is Texas Instruments' document, not this project's, and this repository is public. What is carried is the identity, which is what makes a copy checkable.",
+  "readOn": "2026-10-17",
+  "partsWithNoDocument": {},
+  "documents": [
+    {
+      "file": "manufacturer/SN76489AN_Digital_Complex_Sound_Generator_Data_Sheet.pdf",
+      "rung": 1,
+      "publisher": "Texas Instruments",
+      "title": "SN76489AN Digital Complex Sound Generator data sheet",
+      "date": "undated",
+      "retrievedFrom": "https://wiki.console5.com/tw/images/b/b0/SN76489.pdf",
+      "fetchedByHand": "Its only known host answers a script with a challenge page, so the fetcher verifies a copy you already hold and never tries to replace it.",
+      "covers": ["sn76489an", "sn76494n"],
+      "settles": "The clock path and its dividers, the tone counter, the noise rates and feedback modes, the attenuation weights, the eight registers and both byte formats, the latched register address, the load time and READY, and how the SN76494N differs.",
+      "sha256": "ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91",
+      "bytes": 342317,
+      "pages": 9,
+      "provenance": "A scan of the printed data sheet with a text layer from an OCR pass, which garbles some words and figures. Every figure this package uses was read from the page image. Pages 3 and 4 carry a later hand, with red rules and the data formats retyped, and the retyped formats number the bits in the opposite order to the prose; the prose and Table 1 decide."
+    }
+  ]
+}

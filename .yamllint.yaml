@@ -1,0 +1,11 @@
+---
+extends: default
+ignore: |
+  pnpm-lock.yaml
+  node_modules/
+  ti-tms9918-python/
+rules:
+  truthy:
+    check-keys: false
+  line-length:
+    max: 100

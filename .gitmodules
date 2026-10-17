@@ -1,0 +1,3 @@
+[submodule "ti-tms9918-python"]
+	path = ti-tms9918-python
+	url = https://github.com/gufranco/ti-tms9918-python.git
