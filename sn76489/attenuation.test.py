@@ -6,7 +6,19 @@ sys.path.insert(0, str(ROOT))
 
 import unittest  # noqa: E402
 
-from sn76489 import attenuation  # noqa: E402
+import sn76489  # noqa: E402
+
+TONE_ONE_LEVEL = 0x90
+
+
+def gain_at(step: int) -> float:
+    part = sn76489.Chip("sn76489an", seed=5)
+    part.write(TONE_ONE_LEVEL | step)
+    return float(part.gains[0])
+
+
+def amplitude(decibels: int) -> float:
+    return float(10 ** (-decibels / 20))
 
 
 class TableOneTest(unittest.TestCase):
@@ -15,27 +27,28 @@ class TableOneTest(unittest.TestCase):
         steps = (0b0001, 0b0010, 0b0100, 0b1000)
 
         # Act
-        weights = [attenuation.decibels(step) for step in steps]
+        gains = [gain_at(step) for step in steps]
 
         # Assert
-        self.assertEqual(weights, [2, 4, 8, 16])
+        for found, decibels in zip(gains, (2, 4, 8, 16), strict=True):
+            self.assertAlmostEqual(found, amplitude(decibels))
 
     def test_bits_set_together_add_to_a_28_db_maximum(self) -> None:
         # Arrange
         step = 0b1110
 
         # Act
-        weight = attenuation.decibels(step)
+        gain = gain_at(step)
 
         # Assert
-        self.assertEqual(weight, 28)
+        self.assertAlmostEqual(gain, amplitude(28))
 
     def test_all_four_bits_set_is_off(self) -> None:
         # Arrange
         step = 0b1111
 
         # Act
-        gain = attenuation.gain(step)
+        gain = gain_at(step)
 
         # Assert
         self.assertEqual(gain, 0.0)
@@ -45,7 +58,7 @@ class TableOneTest(unittest.TestCase):
         step = 0
 
         # Act
-        gain = attenuation.gain(step)
+        gain = gain_at(step)
 
         # Assert
         self.assertEqual(gain, 1.0)
@@ -55,7 +68,7 @@ class TableOneTest(unittest.TestCase):
         step = 0b1010
 
         # Act
-        gain = attenuation.gain(step)
+        gain = gain_at(step)
 
         # Assert
         self.assertAlmostEqual(gain, 0.1)

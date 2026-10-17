@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败，在数据手册中定位到 **16** 处引文，**2** 款芯片，**577** 个测试，**100%** 语句和分支覆盖率，无依赖
+**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败，在数据手册中定位到 **16** 处引文，**2** 款芯片，**592** 个测试，**100%** 语句和分支覆盖率，无依赖
 
 ```python
 import sn76489

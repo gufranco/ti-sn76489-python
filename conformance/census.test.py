@@ -246,8 +246,8 @@ class FaultTest(unittest.TestCase):
         results = [heard(raised="IndexError: planted at frame 0")]
 
         # Act
-        broken = census._tally(images, results)["properties"][census.RAISES_NOTHING]
-        named = census._culprits(images, results)[census.RAISES_NOTHING]
+        broken = census.tally(images, results)["properties"][census.RAISES_NOTHING]
+        named = census.culprits(images, results)[census.RAISES_NOTHING]
 
         # Assert
         self.assertEqual((broken, named), (1, ["a.sg: IndexError: planted at frame 0"]))
@@ -258,8 +258,8 @@ class FaultTest(unittest.TestCase):
         results = [heard(locked=True)]
 
         # Act
-        broken = census._tally(images, results)["properties"][census.NEVER_LOCKS]
-        named = census._culprits(images, results)[census.NEVER_LOCKS]
+        broken = census.tally(images, results)["properties"][census.NEVER_LOCKS]
+        named = census.culprits(images, results)[census.NEVER_LOCKS]
 
         # Assert
         self.assertEqual((broken, named), (1, ["a.sg"]))
@@ -304,8 +304,8 @@ class ReportTest(unittest.TestCase):
             "images": 1,
             "gated": 1,
             "frames": 2,
-            **census._tally(images, results),
-            "culprits": census._culprits(images, results),
+            **census.tally(images, results),
+            "culprits": census.culprits(images, results),
         }
 
         # Act

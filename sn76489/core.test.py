@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
@@ -7,7 +8,6 @@ sys.path.insert(0, str(ROOT))
 import unittest  # noqa: E402
 
 import sn76489  # noqa: E402
-from sn76489.core import Chip  # noqa: E402
 
 TONE_ONE_PERIOD = 0x80
 
@@ -20,25 +20,25 @@ NOISE_CONTROL = 0xE0
 NOISE_LEVEL = 0xF0
 
 
-def loaded(model: str = "sn76489an") -> Chip:
-    part: Chip = sn76489.Chip(model, seed=7)
+def loaded(model: str = "sn76489an") -> Any:
+    part: Any = sn76489.Chip(model, seed=7)
     for _ in range(part.part.load_clocks):
         part.tick()
     return part
 
 
-def write(part: Chip, *values: int) -> None:
+def write(part: Any, *values: int) -> None:
     for value in values:
         part.write(value)
         for _ in range(part.part.load_clocks):
             part.tick()
 
 
-def set_period(part: Chip, first: int, period: int) -> None:
+def set_period(part: Any, first: int, period: int) -> None:
     write(part, first | (period & 0x0F), (period >> 4) & 0x3F)
 
 
-def toggle_gaps(part: Chip, channel: int, periods: int) -> list[int]:
+def toggle_gaps(part: Any, channel: int, periods: int) -> list[int]:
     gaps: list[int] = []
     last = part.bits[channel]
     since = 0

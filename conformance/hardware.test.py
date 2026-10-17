@@ -1,6 +1,8 @@
 import json
+import math
 import sys
 import unittest
+from itertools import pairwise
 from pathlib import Path
 from typing import Any
 
@@ -8,7 +10,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 import sn76489  # noqa: E402
-from sn76489 import attenuation, models, noise, tone  # noqa: E402
 
 HELD: dict[str, Any] = json.loads((ROOT / "conformance" / "hardware.json").read_text())
 
@@ -20,14 +21,25 @@ PAGES = range(1, 10)
 
 UNSTATED_KEYS = {"value", "verified", "why", "source", "howToSettleIt", "governs"}
 
-
-def value(name: str) -> Any:
-    return FACTS[name]["value"]
-
-
 EDGE_LIMIT = 1 << 18
 
 LOAD_LIMIT = 1 << 8
+
+SHIFT_LIMIT = 1 << 22
+
+TONE_ONE = 0x80
+
+TONE_ONE_LEVEL = 0x90
+
+TONE_THREE = 0xC0
+
+WHITE_AT_512 = 0xE4
+
+PUBLIC_STATE = ("ready", "loading", "periods", "steps", "control", "shift", "latched", "bits")
+
+
+def value(name: str) -> Any:
+    return FACTS[name]["value"]
 
 
 def built(model: str) -> Any:
@@ -61,11 +73,56 @@ def edges(part: Any, count: int) -> list[int]:
     return found
 
 
+def shift_gaps(part: Any, count: int) -> set[int]:
+    found: list[int] = []
+    limit = part.ticks + SHIFT_LIMIT
+    while len(found) < count and part.ticks < limit:
+        before = part.shift
+        part.tick()
+        if part.shift != before:
+            found.append(part.ticks)
+    return {later - earlier for earlier, later in pairwise(found[1:])}
+
+
+def registers_seen(part: Any, shifts: int) -> set[int]:
+    seen: set[int] = set()
+    limit = part.ticks + SHIFT_LIMIT
+    while len(seen) < shifts and part.ticks < limit:
+        before = part.shift
+        part.tick()
+        if part.shift != before:
+            seen.add(part.shift)
+    return seen
+
+
 def state(part: Any) -> tuple[Any, ...]:
     return tuple(
-        list(getattr(part, slot)) if isinstance(getattr(part, slot), list) else getattr(part, slot)
-        for slot in type(part).__slots__
+        list(getattr(part, name)) if isinstance(getattr(part, name), list) else getattr(part, name)
+        for name in PUBLIC_STATE
     )
+
+
+def ticks_per_period(model: str) -> int:
+    part = built(model)
+    before = part.ticks
+    part.clock()
+    return int(part.ticks - before)
+
+
+def gain_at(step: int) -> float:
+    part = built("sn76489an")
+    part.write(TONE_ONE_LEVEL | step)
+    return float(part.gains[0])
+
+
+def latched_after(first_byte: int) -> int:
+    part = built("sn76489an")
+    part.write(first_byte)
+    return int(part.latched)
+
+
+def decibels(gain: float) -> int:
+    return round(-20 * math.log10(gain))
 
 
 class RecordTest(unittest.TestCase):
@@ -107,7 +164,7 @@ class RecordTest(unittest.TestCase):
         stray = [
             name
             for name, entry in entries.items()
-            if not entry.get("governs") or not set(entry["governs"]) <= set(models.MODELS)
+            if not entry.get("governs") or not set(entry["governs"]) <= set(sn76489.MODELS)
         ]
 
         # Assert
@@ -139,79 +196,81 @@ class RecordTest(unittest.TestCase):
 class FactTest(unittest.TestCase):
     def test_the_prescale_is_what_the_data_sheet_prints_for_each_part(self) -> None:
         # Arrange
-        printed = value("prescale")
+        names = sorted(sn76489.MODELS)
 
         # Act
-        modelled = {name: model.prescale for name, model in models.MODELS.items()}
+        spent = {name: ticks_per_period(name) for name in names}
 
         # Assert
-        self.assertEqual(modelled, printed)
+        self.assertEqual(spent, value("prescale"))
 
     def test_the_load_time_is_what_the_data_sheet_prints_for_each_part(self) -> None:
         # Arrange
-        printed = value("loadClocks")
+        parts = {name: built(name) for name in sn76489.MODELS}
 
         # Act
-        modelled = {name: model.load_clocks for name, model in models.MODELS.items()}
+        held = {name: held_low(part, TONE_ONE_LEVEL) for name, part in parts.items()}
 
         # Assert
-        self.assertEqual(modelled, printed)
+        self.assertEqual(held, value("loadClocks"))
 
     def test_the_tone_counter_has_the_printed_number_of_stages(self) -> None:
         # Arrange
-        printed = value("toneCounter")["bits"]
+        part = loaded("sn76489an", TONE_ONE | 0x0F)
 
         # Act
-        modelled = tone.PERIOD_BITS
+        part.write(0x3F)
 
         # Assert
-        self.assertEqual(modelled, printed)
+        self.assertEqual(part.periods[0].bit_length(), value("toneCounter")["bits"])
 
     def test_the_counter_decrements_once_per_printed_number_of_input_clocks(
         self,
     ) -> None:
         # Arrange
-        part = built("sn76489an")
-        before = part.ticks
+        part = loaded("sn76489an", TONE_ONE | 1, 0)
 
         # Act
-        part.clock()
+        found = edges(part, 3)
 
         # Assert
-        self.assertEqual(part.ticks - before, value("toneCounter")["decrementsPerInputClocks"])
+        self.assertEqual(found[2] - found[1], value("toneCounter")["decrementsPerInputClocks"])
 
     def test_the_fields_have_the_printed_widths(self) -> None:
         # Arrange
-        printed = value("toneFields")
+        part = loaded("sn76489an", TONE_ONE | 0x0F, 0x3F)
 
         # Act
-        modelled = {
-            "frequencyBits": tone.PERIOD_BITS,
-            "attenuationBits": attenuation.OFF.bit_length(),
-        }
+        part.write(TONE_ONE_LEVEL | 0x0F)
 
         # Assert
-        self.assertEqual(modelled, printed)
+        self.assertEqual(
+            {
+                "frequencyBits": part.periods[0].bit_length(),
+                "attenuationBits": part.steps[0].bit_length(),
+            },
+            value("toneFields"),
+        )
 
     def test_the_largest_attenuation_short_of_off_is_the_printed_maximum(self) -> None:
         # Arrange
-        steps = range(attenuation.OFF)
+        steps = range(15)
 
         # Act
-        largest = max(attenuation.decibels(step) for step in steps)
+        gains = [gain_at(step) for step in steps]
 
         # Assert
-        self.assertEqual(largest, value("attenuationMaximum"))
+        self.assertEqual(decibels(min(gains)), value("attenuationMaximum"))
 
     def test_the_fixed_noise_rates_are_the_printed_ones(self) -> None:
         # Arrange
-        prescale = value("prescale")["sn76489an"]
+        controls = (WHITE_AT_512, WHITE_AT_512 | 1, WHITE_AT_512 | 2)
 
         # Act
-        modelled = [rate * prescale for rate in noise.RATES]
+        found = [shift_gaps(loaded("sn76489an", control), 4) for control in controls]
 
         # Assert
-        self.assertEqual(modelled, value("noiseRates"))
+        self.assertEqual(found, [{rate} for rate in value("noiseRates")])
 
     def test_a_noise_write_clears_the_shift_register(self) -> None:
         # Arrange
@@ -219,20 +278,18 @@ class FactTest(unittest.TestCase):
         cleared = value("noiseCleared")
 
         # Act
-        part.write(0xE4)
+        part.write(WHITE_AT_512)
 
         # Assert
         self.assertEqual(part.shift == UNSTATED["shiftRegister"]["value"]["clearedTo"], cleared)
 
     def test_no_reachable_shift_state_is_zero(self) -> None:
         # Arrange
-        register = noise.TOP
-        seen = set()
+        part = loaded("sn76494n", TONE_THREE | 1, 0, WHITE_AT_512 | 3)
+        width = UNSTATED["shiftRegister"]["value"]["bits"]
 
         # Act
-        for _ in range(1 << noise.WIDTH):
-            register = noise.shifted(register, white=True)
-            seen.add(register)
+        seen = registers_seen(part, (1 << width) - 1)
 
         # Assert
         self.assertEqual(0 not in seen, value("noiseNeverLocks"))
@@ -242,25 +299,25 @@ class FactTest(unittest.TestCase):
         printed = value("registerField")
 
         # Act
-        addressable = 1 << printed["fieldBits"]
+        reached = {latched_after(0x80 | one << 4) for one in range(1 << printed["fieldBits"])}
 
         # Assert
-        self.assertEqual(addressable, printed["registers"])
+        self.assertEqual(len(reached), printed["registers"])
 
     def test_a_second_byte_reaches_the_six_most_significant_bits(self) -> None:
         # Arrange
         part = built("sn76489an")
-        part.write(0x80)
+        part.write(TONE_ONE)
 
         # Act
         part.write(0x3F)
 
         # Assert
-        self.assertEqual(part.periods[0].bit_length() - tone.LOW_BITS, value("secondByte"))
+        self.assertEqual(bin(part.periods[0]).count("1"), value("secondByte"))
 
     def test_ready_stays_low_for_the_printed_load_time(self) -> None:
         # Arrange
-        parts = {name: built(name) for name in models.MODELS}
+        parts = {name: built(name) for name in sn76489.MODELS}
 
         # Act
         held = {name: held_low(part, 0x9F) for name, part in parts.items()}
@@ -270,17 +327,21 @@ class FactTest(unittest.TestCase):
 
     def test_a_borrow_toggles_the_flip_flop_and_reloads_the_counter(self) -> None:
         # Arrange
-        part = loaded("sn76489an", 0x85, 0x00)
+        part = loaded("sn76489an", TONE_ONE | 5, 0)
 
         # Act
-        edges(part, 1)
+        found = edges(part, 4)
 
         # Assert
-        self.assertEqual(part.counters[0], part.periods[0], value("toneBorrow"))
+        self.assertEqual(
+            {found[2] - found[1], found[3] - found[2]},
+            {part.periods[0] * value("prescale")["sn76489an"]},
+            value("toneBorrow"),
+        )
 
     def test_a_full_cycle_lasts_twice_the_period(self) -> None:
         # Arrange
-        part = loaded("sn76489an", 0x85, 0x00)
+        part = loaded("sn76489an", TONE_ONE | 5, 0)
 
         # Act
         found = edges(part, 3)
@@ -294,13 +355,13 @@ class FactTest(unittest.TestCase):
 
     def test_the_address_stays_latched_for_every_later_data_byte(self) -> None:
         # Arrange
-        part = loaded("sn76489an", 0x80, 0x01)
+        part = loaded("sn76489an", TONE_ONE, 0x01)
 
         # Act
         part.write(0x02)
 
         # Assert
-        self.assertEqual(part.periods[0] >> tone.LOW_BITS == 2, value("latchedAddress"))
+        self.assertEqual(part.periods[0] == 0x020, value("latchedAddress"))
 
     def test_with_no_reset_pin_a_reset_changes_nothing(self) -> None:
         # Arrange
@@ -318,27 +379,26 @@ class UnstatedTest(unittest.TestCase):
     def test_the_shift_register_is_the_width_its_record_gives(self) -> None:
         # Arrange
         recorded = UNSTATED["shiftRegister"]["value"]
+        part = built("sn76489an")
 
         # Act
-        modelled = (noise.WIDTH, noise.TOP)
+        part.write(WHITE_AT_512)
 
         # Assert
-        self.assertEqual(modelled, (recorded["bits"], recorded["clearedTo"]))
+        self.assertEqual(part.shift, 1 << (recorded["bits"] - 1))
 
     def test_a_zero_period_lasts_as_long_as_its_record_says(self) -> None:
         # Arrange
-        counter = 0
-        steps = 0
+        part = loaded("sn76489an", TONE_ONE, 0)
 
         # Act
-        while True:
-            counter = tone.counted(counter)
-            steps += 1
-            if counter == 0:
-                break
+        found = edges(part, 3)
 
         # Assert
-        self.assertEqual(steps, UNSTATED["zeroPeriod"]["value"])
+        self.assertEqual(
+            (found[2] - found[1]) // value("prescale")["sn76489an"],
+            UNSTATED["zeroPeriod"]["value"],
+        )
 
 
 if __name__ == "__main__":

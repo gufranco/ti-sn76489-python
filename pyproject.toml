@@ -79,12 +79,13 @@ enable_error_code = [
 files = ["sn76489", "conformance"]
 
 [[tool.mypy.overrides]]
-module = ["tms9918.*", "z80.*"]
+module = ["tms9918.*", "z80.*", "setuptools.*"]
 follow_imports = "skip"
 ignore_missing_imports = true
 
 [tool.coverage.run]
-source = ["sn76489", "conformance"]
+source = ["."]
+omit = ["ti-tms9918-python/*"]
 branch = true
 
 [tool.coverage.report]

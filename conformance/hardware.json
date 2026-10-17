@@ -43,8 +43,7 @@
       "governs": ["sn76489an", "sn76494n"],
       "alsoRead": "Page 8 draws a divide-by-16 between the clock pin and the generators; page 9 marks it divide-by-2 on the SN76494N.",
       "heldBy": [
-        "conformance/hardware.test.py::FactTest.test_the_prescale_is_what_the_data_sheet_prints_for_each_part",
-        "conformance/hardware.test.py::FactTest.test_the_fixed_noise_rates_are_the_printed_ones"
+        "conformance/hardware.test.py::FactTest.test_the_prescale_is_what_the_data_sheet_prints_for_each_part"
       ]
     },
     "loadClocks": {

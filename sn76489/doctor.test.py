@@ -53,7 +53,7 @@ class VersionTest(unittest.TestCase):
         beside = ROOT / "sn76489" / "version.py"
 
         # Act
-        found = doctor._version(beside)
+        found = doctor.installed_version(beside)
 
         # Assert
         self.assertEqual(found, doctor.VERSION)
@@ -63,7 +63,7 @@ class VersionTest(unittest.TestCase):
         path = folder_with("version.py", "RELEASE = 1\n")
 
         # Act
-        found = doctor._version(path)
+        found = doctor.installed_version(path)
 
         # Assert
         self.assertEqual(found, "unknown")
@@ -91,7 +91,7 @@ class ReachableTest(unittest.TestCase):
         path: list[str] = []
 
         # Act
-        added = doctor._reachable(Path("/somewhere"), path)
+        added = doctor.reachable(Path("/somewhere"), path)
 
         # Assert
         self.assertEqual((added, path), (True, ["/somewhere"]))
@@ -101,7 +101,7 @@ class ReachableTest(unittest.TestCase):
         path = ["/somewhere"]
 
         # Act
-        added = doctor._reachable(Path("/somewhere"), path)
+        added = doctor.reachable(Path("/somewhere"), path)
 
         # Assert
         self.assertEqual((added, path), (False, ["/somewhere"]))
@@ -142,7 +142,7 @@ class FindingTest(unittest.TestCase):
 class DrivingTest(unittest.TestCase):
     def test_the_package_imports(self) -> None:
         # Arrange
-        check = doctor._package
+        check = doctor.check_package
 
         # Act
         found = check()
@@ -152,7 +152,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_every_model_builds(self) -> None:
         # Arrange
-        check = doctor._building
+        check = doctor.check_building
 
         # Act
         found = check()
@@ -162,7 +162,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_a_tone_toggles_every_n_periods(self) -> None:
         # Arrange
-        check = doctor._toning
+        check = doctor.check_toning
 
         # Act
         found = check()
@@ -172,7 +172,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_ready_holds_for_each_models_load_time(self) -> None:
         # Arrange
-        check = doctor._loading
+        check = doctor.check_loading
 
         # Act
         found = check()
@@ -188,7 +188,7 @@ class DrivingTest(unittest.TestCase):
 
     def test_a_noise_write_clears_the_shift_register(self) -> None:
         # Arrange
-        check = doctor._noising
+        check = doctor.check_noising
 
         # Act
         found = check()
@@ -203,14 +203,19 @@ class RefusingTest(unittest.TestCase):
         load = broken
 
         # Act
-        found = doctor._package(load)
+        found = doctor.check_package(load)
 
         # Assert
         self.assertEqual((found.ok, found.detail), (False, "ValueError: this build refuses"))
 
     def test_each_driving_check_reports_what_it_threw(self) -> None:
         # Arrange
-        checks = (doctor._building, doctor._toning, doctor._loading, doctor._noising)
+        checks = (
+            doctor.check_building,
+            doctor.check_toning,
+            doctor.check_loading,
+            doctor.check_noising,
+        )
 
         # Act
         found = [check(broken) for check in checks]
@@ -226,7 +231,7 @@ class RefusingTest(unittest.TestCase):
         silent = lambda _model: Silent()  # noqa: E731
 
         # Act
-        found = doctor._toning(silent)
+        found = doctor.check_toning(silent)
 
         # Assert
         self.assertEqual((found.ok, found.detail.endswith("every [] periods")), (False, True))
@@ -236,7 +241,7 @@ class RefusingTest(unittest.TestCase):
         stuck = lambda _model: Stuck()  # noqa: E731
 
         # Act
-        found = doctor._loading(one_model, stuck)
+        found = doctor.check_loading(one_model, stuck)
 
         # Assert
         self.assertEqual((found.ok, found.detail), (False, "sn76489an held READY for 33 clocks"))
@@ -246,7 +251,7 @@ class RefusingTest(unittest.TestCase):
         silent = lambda _model: Silent()  # noqa: E731
 
         # Act
-        found = doctor._noising(silent)
+        found = doctor.check_noising(silent)
 
         # Assert
         self.assertEqual((found.ok, found.detail.endswith("0x0000")), (False, True))
@@ -258,7 +263,7 @@ class DataSheetTest(unittest.TestCase):
         nowhere = Path(tempfile.mkdtemp())
 
         # Act
-        found = doctor._data_sheet(held=nowhere)
+        found = doctor.check_data_sheet(held=nowhere)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("not here")), (True, True))
@@ -271,7 +276,7 @@ class DataSheetTest(unittest.TestCase):
         (held / entry["file"]).write_bytes(b"not the scan")
 
         # Act
-        found = doctor._data_sheet(held=held)
+        found = doctor.check_data_sheet(held=held)
 
         # Assert
         self.assertEqual((found.ok, found.detail.endswith("is a different file")), (False, True))
@@ -281,7 +286,7 @@ class DataSheetTest(unittest.TestCase):
         manifest = folder_with("documents.json", "{")
 
         # Act
-        found = doctor._data_sheet(manifest=manifest)
+        found = doctor.check_data_sheet(manifest=manifest)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("JSONDecodeError")), (False, True))
@@ -293,7 +298,7 @@ class CorpusTest(unittest.TestCase):
         held = json.loads(doctor.CORPUS.read_text())
 
         # Act
-        found = doctor._corpus()
+        found = doctor.check_corpus()
 
         # Assert
         self.assertEqual((found.ok, found.detail), (True, f"{held['images']} images behind it"))
@@ -303,7 +308,7 @@ class CorpusTest(unittest.TestCase):
         where = Path(tempfile.mkdtemp()) / "corpus.json"
 
         # Act
-        found = doctor._corpus(where)
+        found = doctor.check_corpus(where)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("not here")), (False, True))
@@ -313,7 +318,7 @@ class CorpusTest(unittest.TestCase):
         where = folder_with("corpus.json", '{"images": 0}')
 
         # Act
-        found = doctor._corpus(where)
+        found = doctor.check_corpus(where)
 
         # Assert
         self.assertFalse(found.ok)
@@ -323,7 +328,7 @@ class CorpusTest(unittest.TestCase):
         where = folder_with("corpus.json", "[]")
 
         # Act
-        found = doctor._corpus(where)
+        found = doctor.check_corpus(where)
 
         # Assert
         self.assertEqual((found.ok, found.detail.startswith("TypeError")), (False, True))
@@ -335,7 +340,7 @@ class HarnessTest(unittest.TestCase):
         find = lambda _name: None  # noqa: E731
 
         # Act
-        found = doctor._harness(find)
+        found = doctor.check_harness(find)
 
         # Assert
         self.assertEqual((found.ok, "not checked out" in found.detail), (True, True))
@@ -345,7 +350,7 @@ class HarnessTest(unittest.TestCase):
         find = lambda _name: type("Spec", (), {"origin": "/here/tms9918/__init__.py"})()  # noqa: E731
 
         # Act
-        found = doctor._harness(find)
+        found = doctor.check_harness(find)
 
         # Assert
         self.assertEqual(found.detail, "ti-tms9918-python found at /here/tms9918/__init__.py")
@@ -355,7 +360,7 @@ class HarnessTest(unittest.TestCase):
         find = broken
 
         # Act
-        found = doctor._harness(find)
+        found = doctor.check_harness(find)
 
         # Assert
         self.assertFalse(found.ok)
