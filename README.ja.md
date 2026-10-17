@@ -2,7 +2,7 @@
 
 Texas InstrumentsのSN76489AN、SN76494NサウンドジェネレータをPythonで実装したものです。入力クロックを1つずつ進め、TIのデータシートに準拠させています。
 
-[English](README.md) &nbsp;|&nbsp; 日本語 &nbsp;|&nbsp; [简体中文](README.zh-Hans.md) &nbsp;|&nbsp; [繁體中文（香港）](README.zh-HK.md)
+[English](README.md) | 日本語 | [简体中文](README.zh-Hans.md) | [繁體中文（香港）](README.zh-HK.md)
 
 [![CI](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml/badge.svg)](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)

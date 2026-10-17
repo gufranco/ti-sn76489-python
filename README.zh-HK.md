@@ -2,7 +2,7 @@
 
 以 Python 實現的 Texas Instruments SN76489AN 和 SN76494N 聲音產生器，每次推進一個輸入時鐘，並以 TI 的數據表為準。
 
-[English](README.md) &nbsp;|&nbsp; [日本語](README.ja.md) &nbsp;|&nbsp; [简体中文](README.zh-Hans.md) &nbsp;|&nbsp; 繁體中文（香港）
+[English](README.md) | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | 繁體中文（香港）
 
 [![CI](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml/badge.svg)](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
