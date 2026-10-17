@@ -8,7 +8,7 @@ Texas InstrumentsのSN76489AN、SN76494NサウンドジェネレータをPython�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**16**件、**2**品種、テスト**595**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**16**件、**2**品種、テスト**600**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import sn76489
@@ -230,7 +230,7 @@ TIが記載した事実のうち、テストで到達できるものはすべて
 ```bash
 uvx ruff@0.16.3 format --check .
 uvx ruff@0.16.3 check .
-uvx --python 3.12 mypy==1.14.1
+uvx --python 3.12 --with types-setuptools==84.0.0.20260812 mypy==1.14.1
 python3 sn76489/core.test.py
 ```
 

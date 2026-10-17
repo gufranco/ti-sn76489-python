@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，屬性失敗為 **0**，在數據表中找到 **16** 處引文，**2** 款晶片，**595** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
+**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，屬性失敗為 **0**，在數據表中找到 **16** 處引文，**2** 款晶片，**600** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
 
 ```python
 import sn76489
@@ -230,7 +230,7 @@ TI 列出的每個測試可觸及的事實，都以程式碼加以核對。[`con
 ```bash
 uvx ruff@0.16.3 format --check .
 uvx ruff@0.16.3 check .
-uvx --python 3.12 mypy==1.14.1
+uvx --python 3.12 --with types-setuptools==84.0.0.20260812 mypy==1.14.1
 python3 sn76489/core.test.py
 ```
 
