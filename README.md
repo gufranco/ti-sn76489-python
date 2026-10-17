@@ -82,7 +82,7 @@ Releases follow [Semantic Versioning](https://semver.org/) and are cut from the 
 | `write(value)` | One byte on the data bus with CE and WE strobed. A byte with bit 7 set addresses a register and sets its four low bits; one without it sets the six high bits of the tone period last addressed, or the four bits of any other register. READY falls |
 | `tick()` | One input clock |
 | `clock()` | One prescaled period: 16 input clocks on the SN76489AN, 2 on the SN76494N |
-| `reset()` | The part has no reset pin, so nothing changes. Returns the part |
+| `reset()` | The part has no reset pin, so nothing changes. Returns the part. The part is defined only once software has written all eight registers: three periods, four attenuations and the noise control |
 
 ### State
 
