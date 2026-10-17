@@ -8,7 +8,7 @@ Texas InstrumentsのSN76489AN、SN76494NサウンドジェネレータをPython�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**16**件、**2**品種、テスト**592**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**16**件、**2**品種、テスト**595**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import sn76489
