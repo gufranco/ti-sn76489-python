@@ -41,7 +41,11 @@
       "page": 1,
       "document": "dataSheet",
       "governs": ["sn76489an", "sn76494n"],
-      "alsoRead": "Page 8 draws a divide-by-16 between the clock pin and the generators; page 9 marks it divide-by-2 on the SN76494N."
+      "alsoRead": "Page 8 draws a divide-by-16 between the clock pin and the generators; page 9 marks it divide-by-2 on the SN76494N.",
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_the_prescale_is_what_the_data_sheet_prints_for_each_part",
+        "conformance/hardware.test.py::FactTest.test_the_fixed_noise_rates_are_the_printed_ones"
+      ]
     },
     "loadClocks": {
       "value": {
@@ -51,14 +55,21 @@
       "quote": "The SN76489AN requires approximately 32 clock cycles to load the data into the control register.",
       "page": 4,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_the_load_time_is_what_the_data_sheet_prints_for_each_part",
+        "conformance/hardware.test.py::FactTest.test_ready_stays_low_for_the_printed_load_time"
+      ]
     },
     "ready": {
       "value": "low from the write until the load completes",
       "quote": "The open collector READY output is used to synchronize the microprocessor to this transfer",
       "page": 4,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_ready_stays_low_for_the_printed_load_time"
+      ]
     },
     "toneCounter": {
       "value": {
@@ -69,21 +80,29 @@
       "page": 2,
       "document": "dataSheet",
       "governs": ["sn76489an"],
-      "alsoRead": "The SN76494N's counter decrements at N/2, since page 1 deletes the divide-by-eight stage; see prescale."
+      "alsoRead": "The SN76494N's counter decrements at N/2, since page 1 deletes the divide-by-eight stage; see prescale.",
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_the_tone_counter_has_the_printed_number_of_stages",
+        "conformance/hardware.test.py::FactTest.test_the_counter_decrements_once_per_printed_number_of_input_clocks"
+      ]
     },
     "toneBorrow": {
       "value": "toggles the flip-flop and reloads the counter",
       "quote": "When the tone counter decrements to zero, a borrow signal is produced. This borrow signal toggles the frequency flip-flop and also reloads the tone counter.",
       "page": 2,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_a_borrow_toggles_the_flip_flop_and_reloads_the_counter"
+      ]
     },
     "tonePeriod": {
       "value": "a full cycle is twice the register's count of periods",
       "quote": "Thus, the period of the desired frequency is twice the value of the period register.",
       "page": 2,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": ["conformance/hardware.test.py::FactTest.test_a_full_cycle_lasts_twice_the_period"]
     },
     "toneFields": {
       "value": {
@@ -93,7 +112,8 @@
       "quote": "Each tone generator requires 10 bits of information to select the frequency and 4 bits of information to select the attenuation.",
       "page": 3,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": ["conformance/hardware.test.py::FactTest.test_the_fields_have_the_printed_widths"]
     },
     "attenuationMaximum": {
       "value": 28,
@@ -101,14 +121,20 @@
       "page": 2,
       "document": "dataSheet",
       "governs": ["sn76489an", "sn76494n"],
-      "alsoRead": "Table 1 on the same page weighs the four bits 16, 8, 4 and 2 dB, with all four set as off."
+      "alsoRead": "Table 1 on the same page weighs the four bits 16, 8, 4 and 2 dB, with all four set as off.",
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_the_largest_attenuation_short_of_off_is_the_printed_maximum"
+      ]
     },
     "noiseCleared": {
       "value": true,
       "quote": "Whenever the noise control register is changed, the shift register is cleared.",
       "page": 2,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_a_noise_write_clears_the_shift_register"
+      ]
     },
     "noiseRates": {
       "value": [512, 1024, 2048],
@@ -116,14 +142,18 @@
       "page": 2,
       "document": "dataSheet",
       "governs": ["sn76489an"],
-      "alsoRead": "Table 3 on page 3 lists N/512, N/1024, N/2048 and tone generator 3's output. It prints the first two rows' bits as 0 0 twice; see divergences.json. On the SN76494N the same three rates are N/64, N/128 and N/256, since page 1 deletes the divide-by-eight stage."
+      "alsoRead": "Table 3 on page 3 lists N/512, N/1024, N/2048 and tone generator 3's output. It prints the first two rows' bits as 0 0 twice; see divergences.json. On the SN76494N the same three rates are N/64, N/128 and N/256, since page 1 deletes the divide-by-eight stage.",
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_the_fixed_noise_rates_are_the_printed_ones"
+      ]
     },
     "noiseNeverLocks": {
       "value": true,
       "quote": "The feeback network has provisions to protect the shift register from being locked in the zero state.",
       "page": 2,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": ["conformance/hardware.test.py::FactTest.test_no_reachable_shift_state_is_zero"]
     },
     "registerField": {
       "value": {
@@ -133,21 +163,30 @@
       "quote": "During all data transfers to the SN76489AN, the first byte contains a three bit field which determines the destination control register.",
       "page": 3,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_there_are_as_many_registers_as_the_field_addresses"
+      ]
     },
     "latchedAddress": {
       "value": true,
       "quote": "The register address is latched on the chip, so the data will continue going into the same register.",
       "page": 3,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_the_address_stays_latched_for_every_later_data_byte"
+      ]
     },
     "secondByte": {
       "value": 6,
       "quote": "This allows the 6 most significant bits to be quickly modified for frequency sweeps.",
       "page": 3,
       "document": "dataSheet",
-      "governs": ["sn76489an", "sn76494n"]
+      "governs": ["sn76489an", "sn76494n"],
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_a_second_byte_reaches_the_six_most_significant_bits"
+      ]
     },
     "reset": {
       "value": "none: the pin table lists all sixteen pins and none is a reset, so reset() defines nothing and hands the part back as it was",
@@ -155,7 +194,10 @@
       "page": 5,
       "document": "dataSheet",
       "governs": ["sn76489an", "sn76494n"],
-      "alsoRead": "That sentence describes pin 9, the only pin not named; the other fifteen are the eight data lines, CE, WE, READY, CLOCK, AUDIO OUT, VCC and GND."
+      "alsoRead": "That sentence describes pin 9, the only pin not named; the other fifteen are the eight data lines, CE, WE, READY, CLOCK, AUDIO OUT, VCC and GND.",
+      "heldBy": [
+        "conformance/hardware.test.py::FactTest.test_with_no_reset_pin_a_reset_changes_nothing"
+      ]
     }
   },
   "notStated": {

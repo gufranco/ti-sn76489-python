@@ -25,8 +25,47 @@ def value(name: str) -> Any:
     return FACTS[name]["value"]
 
 
+EDGE_LIMIT = 1 << 18
+
+LOAD_LIMIT = 1 << 8
+
+
 def built(model: str) -> Any:
     return sn76489.Chip(model, seed=3)
+
+
+def loaded(model: str, *values: int) -> Any:
+    part = built(model)
+    for one in values:
+        held_low(part, one)
+    return part
+
+
+def held_low(part: Any, byte: int) -> int:
+    part.write(byte)
+    clocks = 0
+    while not part.ready and clocks < LOAD_LIMIT:
+        part.tick()
+        clocks += 1
+    return clocks
+
+
+def edges(part: Any, count: int) -> list[int]:
+    found: list[int] = []
+    limit = part.ticks + EDGE_LIMIT
+    while len(found) < count and part.ticks < limit:
+        before = part.bits[0]
+        part.tick()
+        if part.bits[0] != before:
+            found.append(part.ticks)
+    return found
+
+
+def state(part: Any) -> tuple[Any, ...]:
+    return tuple(
+        list(getattr(part, slot)) if isinstance(getattr(part, slot), list) else getattr(part, slot)
+        for slot in type(part).__slots__
+    )
 
 
 class RecordTest(unittest.TestCase):
@@ -177,12 +216,13 @@ class FactTest(unittest.TestCase):
     def test_a_noise_write_clears_the_shift_register(self) -> None:
         # Arrange
         part = built("sn76489an")
+        cleared = value("noiseCleared")
 
         # Act
         part.write(0xE4)
 
         # Assert
-        self.assertEqual(part.shift, UNSTATED["shiftRegister"]["value"]["clearedTo"])
+        self.assertEqual(part.shift == UNSTATED["shiftRegister"]["value"]["clearedTo"], cleared)
 
     def test_no_reachable_shift_state_is_zero(self) -> None:
         # Arrange
@@ -195,7 +235,7 @@ class FactTest(unittest.TestCase):
             seen.add(register)
 
         # Assert
-        self.assertNotIn(0, seen)
+        self.assertEqual(0 not in seen, value("noiseNeverLocks"))
 
     def test_there_are_as_many_registers_as_the_field_addresses(self) -> None:
         # Arrange
@@ -217,6 +257,61 @@ class FactTest(unittest.TestCase):
 
         # Assert
         self.assertEqual(part.periods[0].bit_length() - tone.LOW_BITS, value("secondByte"))
+
+    def test_ready_stays_low_for_the_printed_load_time(self) -> None:
+        # Arrange
+        parts = {name: built(name) for name in models.MODELS}
+
+        # Act
+        held = {name: held_low(part, 0x9F) for name, part in parts.items()}
+
+        # Assert
+        self.assertEqual(held, value("loadClocks"), value("ready"))
+
+    def test_a_borrow_toggles_the_flip_flop_and_reloads_the_counter(self) -> None:
+        # Arrange
+        part = loaded("sn76489an", 0x85, 0x00)
+
+        # Act
+        edges(part, 1)
+
+        # Assert
+        self.assertEqual(part.counters[0], part.periods[0], value("toneBorrow"))
+
+    def test_a_full_cycle_lasts_twice_the_period(self) -> None:
+        # Arrange
+        part = loaded("sn76489an", 0x85, 0x00)
+
+        # Act
+        found = edges(part, 3)
+
+        # Assert
+        self.assertEqual(
+            (found[2] - found[0]) // value("prescale")["sn76489an"],
+            2 * part.periods[0],
+            value("tonePeriod"),
+        )
+
+    def test_the_address_stays_latched_for_every_later_data_byte(self) -> None:
+        # Arrange
+        part = loaded("sn76489an", 0x80, 0x01)
+
+        # Act
+        part.write(0x02)
+
+        # Assert
+        self.assertEqual(part.periods[0] >> tone.LOW_BITS == 2, value("latchedAddress"))
+
+    def test_with_no_reset_pin_a_reset_changes_nothing(self) -> None:
+        # Arrange
+        part = built("sn76489an")
+        before = state(part)
+
+        # Act
+        returned = part.reset()
+
+        # Assert
+        self.assertEqual((returned is part, state(part) == before), (True, True), value("reset"))
 
 
 class UnstatedTest(unittest.TestCase):
