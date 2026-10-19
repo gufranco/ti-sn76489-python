@@ -5,7 +5,7 @@
     "2": "A recording taken off real hardware. Nothing here occupies that rung.",
     "3": "Independent research, for what no manufacturer printed."
   },
-  "whyNotCarriedHere": "This is Texas Instruments' document, not this project's, and this repository is public. What is carried is the identity, which is what makes a copy checkable.",
+  "whyNotCarriedHere": "These are Texas Instruments' documents, not this project's, and this repository is public. What is carried is the identity, which is what makes a copy checkable.",
   "readOn": "2026-10-17",
   "partsWithNoDocument": {},
   "documents": [
@@ -22,7 +22,22 @@
       "sha256": "ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91",
       "bytes": 342317,
       "pages": 9,
-      "provenance": "A scan of the printed data sheet with a text layer from an OCR pass, which garbles some words and figures. Every figure this package uses was read from the page image. Pages 3 and 4 carry a later hand, with red rules and the data formats retyped, and the retyped formats number the bits in the opposite order to the prose; the prose and Table 1 decide."
+      "provenance": "A scan of the printed data sheet with a text layer from an OCR pass, which garbles some words and figures. Every figure this package uses was read from the page image. Pages 3 and 4 carry a later hand, with red rules, the data formats retyped and Table 4's second row retyped; the retyped formats number the bits in the opposite order to the prose. The unretouched scan below shows what TI printed on both pages."
+    },
+    {
+      "file": "manufacturer/SN76489_AN_Unretouched_Scan.pdf",
+      "rung": 1,
+      "publisher": "Texas Instruments",
+      "title": "SN76489AN Digital Complex Sound Generator data sheet, a second scan of the same printing",
+      "date": "undated",
+      "readOn": "2026-10-19",
+      "retrievedFrom": "https://github.com/MajicDesigns/MD_SN76489/raw/30b974c97d99aface74a780dec1046b308f48317/media/doc/SN76489AN%20DataSheet.pdf",
+      "covers": ["sn76489an", "sn76494n"],
+      "settles": "What TI printed on pages 3 and 4 before a later hand retyped them in the other scan: the data formats, which number each byte from BIT 0 on the left with F6 to F9 in the first byte, F0 to F5 in the second and A0 to A3 in an attenuation byte, and Table 4, which prints the Tone 1 Attenuation row as 0 0 0.",
+      "sha256": "af0a54394d3a92a50cbf25a13b384e8d44687cd2c58314d39cb15d58f6eba2d0",
+      "bytes": 1711168,
+      "pages": 9,
+      "provenance": "A scan with no text layer, titled SN76489AN - Manual - Original.pdf in its metadata, carrying the same nine pages as the scan above with no later hand on any of them. Pages 1, 3 and 4 were rendered at 100 and 250 dpi and read as page images; every reading taken from it is a page image reading, so conformance/quotes.py has no text to match it against."
     }
   ]
 }

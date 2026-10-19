@@ -8,7 +8,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures, **16** quotes located in the data sheet, **2** parts, **603** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures, **17** quotes located in the data sheet, **2** parts, **603** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import sn76489
@@ -239,6 +239,7 @@ Each module has a test file beside it, named after it, and each runs on its own 
 ## References
 
 - _SN76489AN Digital Complex Sound Generator_ data sheet, Texas Instruments, undated. 9 pages, 342,317 bytes, SHA-256 `ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91`. It is not redistributable and is not in this repository. Its only known copy is at https://wiki.console5.com/tw/images/b/b0/SN76489.pdf, behind a challenge page that a script cannot pass, so put your copy in `docs/manufacturer/` and `python3 -m conformance.documents --check` refuses any other file.
+- _SN76489AN Digital Complex Sound Generator_ data sheet, a second scan of the same printing with no later hand on it, Texas Instruments, undated. 9 pages, 1,711,168 bytes, SHA-256 `af0a54394d3a92a50cbf25a13b384e8d44687cd2c58314d39cb15d58f6eba2d0`, at https://github.com/MajicDesigns/MD_SN76489/raw/30b974c97d99aface74a780dec1046b308f48317/media/doc/SN76489AN%20DataSheet.pdf. It has no text layer, so it is read as page images. It settles what TI printed on pages 3 and 4. `python3 -m conformance.documents` fetches it into `docs/manufacturer/`.
 - SMS Power, _SN76489_, https://www.smspower.org/Development/SN76489, for the noise shift register and the power-on state of discrete parts. Facts only; no code is taken.
 - MAME, `src/devices/sound/sn76496.cpp` at commit `92f8878050f78c55c6961b688d4960b078150c6a`, https://github.com/mamedev/mame, for behaviour the data sheet leaves unstated. Facts only; no code is taken.
 

@@ -1147,7 +1147,9 @@ the others do not also get._
 **Held to TI's data sheet, read twice.** The SN76489AN data sheet is pinned by
 digest, and every fact taken from it sits in [`conformance/hardware.json`](conformance/hardware.json) with the
 sentence it came from. Its tables were read from the page image as well as the
-text layer, because a later hand retyped the data formats on page 4.
+text layer, because a later hand retyped the data formats on page 4 and a row
+of Table 4. A second scan of the same printing, with no later hand on it, is
+pinned beside it and shows what TI printed on those pages.
 
 **Where the data sheet is silent, the record says so.** It never describes the
 noise shift register, its output after a noise write, the power-on state, or

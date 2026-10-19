@@ -8,7 +8,7 @@ Texas InstrumentsのSN76489AN、SN76494NサウンドジェネレータをPython�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**16**件、**2**品種、テスト**603**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**17**件、**2**品種、テスト**603**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import sn76489
@@ -239,6 +239,7 @@ python3 sn76489/core.test.py
 ## 参考文献
 
 - *SN76489AN Digital Complex Sound Generator*データシート、Texas Instruments、日付なし。9ページ、342,317バイト、SHA-256 `ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91`。再配布はできず、このリポジトリには含まれていません。知られている唯一のコピーはhttps://wiki.console5.com/tw/images/b/b0/SN76489.pdf にありますが、スクリプトでは通過できないチャレンジページの奥にあります。そのため、お手元のコピーを`docs/manufacturer/`に置いてください。`python3 -m conformance.documents --check`はそれ以外のファイルを拒否します。
+- *SN76489AN Digital Complex Sound Generator*データシートの、後から手が加えられていない同じ版の2つ目のスキャン、Texas Instruments、日付なし。9ページ、1,711,168バイト、SHA-256 `af0a54394d3a92a50cbf25a13b384e8d44687cd2c58314d39cb15d58f6eba2d0`、https://github.com/MajicDesigns/MD_SN76489/raw/30b974c97d99aface74a780dec1046b308f48317/media/doc/SN76489AN%20DataSheet.pdf 。テキストレイヤーがないため、ページ画像として読んでいます。3ページと4ページにTIが実際に印刷した内容を確定します。`python3 -m conformance.documents`がこれを`docs/manufacturer/`に取得します。
 - SMS Power、_SN76489_、https://www.smspower.org/Development/SN76489 。ノイズ用シフトレジスタと、単体チップの電源投入時の状態に使用しています。事実のみを利用し、コードは一切取り込んでいません。
 - MAME、コミット`92f8878050f78c55c6961b688d4960b078150c6a`時点の`src/devices/sound/sn76496.cpp`、https://github.com/mamedev/mame 。データシートに記載のない動作に使用しています。事実のみを利用し、コードは一切取り込んでいません。
 

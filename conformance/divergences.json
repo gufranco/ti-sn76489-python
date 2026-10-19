@@ -1,14 +1,14 @@
 {
-  "note": "Every place two sources part, or one source parts with itself, and which way this package went. The data sheet is the only manufacturer document, so most entries are the data sheet disagreeing with itself or an implementation filling a silence.",
+  "note": "Every place two sources part, or one source parts with itself, and which way this package went. The data sheet is the only manufacturer document, held in two scans of one printing, so most entries are the data sheet disagreeing with itself or an implementation filling a silence.",
   "authority": {
     "order": [
-      "the data sheet, read from the page image where its text layer and image differ, and from its own prose where a later hand retyped a page",
+      "the data sheet, read from the page image where its text layer and image differ, and from the unretouched scan where a later hand retyped a page of the other",
       "SMS Power's notes, which cite data taken on an SC-3000H carrying a discrete SN76489AN",
       "MAME, counted with SMS Power as one lineage for the noise register"
     ],
     "why": "A manufacturer's sentence outranks an implementation. Where the data sheet contradicts itself, the reading that agrees with its own prose and block diagram wins."
   },
-  "readOn": "2026-10-17",
+  "readOn": "2026-10-19",
   "divergences": [
     {
       "id": "noise-rate-table-row",
@@ -19,7 +19,8 @@
         "rung": 1,
         "claim": "Table 3 on page 3 prints NF0, NF1 as 0 0, 0 0, 1 0, 1 1 for N/512, N/1024, N/2048 and tone 3, so two rates share one setting.",
         "quote": "The shift register will shift at one of four rates as determined by the two NF bits.",
-        "source": "TI SN76489AN data sheet, page 3"
+        "source": "TI SN76489AN data sheet, page 3",
+        "alsoRead": "The unretouched scan of the same printing prints the same two 0 0 rows, so the repeat is TI's and not the later hand's."
       },
       "referenceSays": {
         "rung": 5,
@@ -30,17 +31,18 @@
         "why": "It is the only reading in which four settings give four rates, and it agrees with the 2/4/8 selector page 8 draws."
       },
       "packageFollows": "reference",
-      "wouldReopenIt": "A printing of the data sheet with a different Table 3."
+      "wouldReopenIt": "A different TI printing with a different Table 3, such as the TMS9919 Sound Generator Controller Specification of 1979-10-16 or the SN94624 specification, both listed by title only at ti99.eu."
     },
     {
       "id": "retyped-bit-order",
       "severity": "contradiction",
-      "status": "acknowledged",
+      "status": "closed",
       "topic": "Which bits of each byte carry F0 to F9 and A0 to A3.",
       "documentSays": {
         "rung": 1,
-        "claim": "Page 2 says F0 is the most significant bit and Table 1 weighs A0 at 16 dB; the pin table on page 5 names D0 the most significant data line. The data formats on page 4, retyped by a later hand, label the bits in the opposite order.",
-        "source": "TI SN76489AN data sheet, pages 2, 4 and 5"
+        "claim": "Page 2 says F0 is the most significant bit and Table 1 weighs A0 at 16 dB; the pin table on page 5 names D0 the most significant data line. The data formats on page 4 of the held scan, retyped by a later hand, label the bits in the opposite order. Page 4 of the unretouched scan, which is TI's own printing, numbers every byte from BIT 0 on the left and agrees with the prose.",
+        "readFromPageImage": "1 | R0 | R1 | R2 | F6 | F7 | F8 | F9, BIT 0 FIRST BYTE BIT 7; 0 | x | F0 | F1 | F2 | F3 | F4 | F5, BIT 0 SECOND BYTE BIT 7; 1 | R0 | R1 | R2 | A0 | A1 | A2 | A3, BIT 0 BIT 7",
+        "source": "TI SN76489AN data sheet, pages 2 and 5 of either scan, page 4 of the unretouched scan read as a page image"
       },
       "referenceSays": {
         "rung": 5,
@@ -48,10 +50,10 @@
       },
       "thisPackageDid": {
         "claim": "Follows the prose and Table 1: the first byte's low four bits are the period's four least significant bits, the second byte's six are its most significant, and an attenuation of all ones is off.",
-        "why": "The prose and the table are TI's printing; the retyped diagram is not."
+        "why": "The prose, Table 1 and TI's own page 4 agree; only the later hand's retyping disagreed."
       },
       "packageFollows": "document",
-      "wouldReopenIt": "An unedited scan of page 4."
+      "closedBy": "Page 4 of the unretouched scan, manufacturer/SN76489_AN_Unretouched_Scan.pdf in conformance/documents.json, read on 2026-10-19."
     },
     {
       "id": "chip-enable-label",
@@ -61,7 +63,8 @@
       "documentSays": {
         "rung": 1,
         "claim": "The pinout on page 1 labels pin 6 OE; the pin table on page 5 and the timing on page 4 call it CE.",
-        "source": "TI SN76489AN data sheet, pages 1, 4 and 5"
+        "source": "TI SN76489AN data sheet, pages 1, 4 and 5",
+        "alsoRead": "The unretouched scan of the same printing labels pin 6 OE on page 1 as well."
       },
       "referenceSays": {
         "rung": 5,
@@ -72,7 +75,30 @@
         "why": "Every page but one calls it CE, and the model has no pins to name."
       },
       "packageFollows": "document",
-      "wouldReopenIt": "A board that uses pin 6 as an output enable."
+      "wouldReopenIt": "A board that uses pin 6 as an output enable, or a different TI printing of page 1."
+    },
+    {
+      "id": "table-4-tone-1-attenuation-row",
+      "severity": "contradiction",
+      "status": "acknowledged",
+      "topic": "Which address Table 4 gives tone 1's attenuation.",
+      "documentSays": {
+        "rung": 1,
+        "claim": "Table 4 on page 3 of the unretouched scan prints R0 R1 R2 as 0 0 0 for both Tone 1 Frequency and Tone 1 Attenuation, so two of the eight registers share one address. In the held scan a later hand retyped that row's R2 as 1.",
+        "quote": "During all data transfers to the SN76489AN, the first byte contains a three bit field which determines the destination control register.",
+        "readFromPageImage": "0 0 0 Tone 1 Frequency; 0 0 0 Tone 1 Attenuation; 0 1 0 Tone 2 Frequency; 0 1 1 Tone 2 Attenuation",
+        "source": "TI SN76489AN data sheet, page 3 of the unretouched scan, Table 4 read as a page image"
+      },
+      "referenceSays": {
+        "rung": 5,
+        "claim": "MAME's sn76496.cpp at 92f8878050f78c55c6961b688d4960b078150c6a takes the address from bits 4 to 6 of a latch byte at line 335 and treats address 1 as the first tone's volume at line 367."
+      },
+      "thisPackageDid": {
+        "claim": "Reads the second row as 0 0 1, so R2 set selects an attenuation for every channel and the eight registers take the eight addresses.",
+        "why": "It is the only reading in which a three bit field reaches eight registers, and every other row of the table follows it."
+      },
+      "packageFollows": "reference",
+      "wouldReopenIt": "A different TI printing with a different Table 4, such as the TMS9919 Sound Generator Controller Specification of 1979-10-16 or the SN94624 specification."
     },
     {
       "id": "noise-output-phase",

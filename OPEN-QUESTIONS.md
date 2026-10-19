@@ -4,7 +4,8 @@ What this project does not know for certain, and what it would take to find out.
 
 Everything here is a place where being faithful is still a claim rather than a
 measurement. The authority above everything else is TI's SN76489AN data sheet,
-read twice. Below it sit SMS Power's notes and MAME, which are leads rather than
+read twice, and a second scan of the same printing that no later hand touched.
+Below it sit SMS Power's notes and MAME, which are leads rather than
 authorities, and an SG-1000 library, which says what software writes but not
 what the chip does with it.
 
@@ -101,15 +102,17 @@ state.
 
 **This package does.** Reads the second row as 0 1, so the two bits count through N/512, N/1024, N/2048 and tone 3, which agrees with the 2/4/8 selector page 8 draws.
 
-**What would settle it.** Another printing of the data sheet.
+**What is known.** A second, unretouched scan of the same printing prints the same two 0 0 rows, so the repeat is TI's.
 
-### Which bits of each byte carry F0 to F9 and A0 to A3
+**What would settle it.** A different TI printing: the TMS9919 Sound Generator Controller Specification of 1979-10-16 or the SN94624 specification. ti99.eu lists both by title only.
 
-**The data sheet says.** Page 2 makes F0 the most significant bit and Table 1 weighs A0 at 16 dB, with D0 the most significant data line. The data formats on page 4, retyped by a later hand, label the bits the other way round.
+### Which address Table 4 gives tone 1's attenuation
 
-**This package does.** Follows the prose and Table 1.
+**The data sheet says.** Table 4 prints R0 R1 R2 as 0 0 0 for both Tone 1 Frequency and Tone 1 Attenuation, in the unretouched scan. In the held scan a later hand retyped that row's R2 as 1.
 
-**What would settle it.** An unedited scan of page 4.
+**This package does.** Reads it as 0 0 1, so R2 set selects an attenuation for every channel and the eight registers take the eight addresses.
+
+**What would settle it.** A different TI printing of Table 4, such as the two specifications named above.
 
 ### What pin 6 is called
 
@@ -117,4 +120,14 @@ state.
 
 **This package does.** Treats it as CE, folded with WE into `write()`.
 
-**What would settle it.** Another printing of page 1.
+**What is known.** The unretouched scan of the same printing labels pin 6 OE on page 1 as well.
+
+**What would settle it.** A different TI printing of page 1, such as the two specifications named above.
+
+## What is not in question
+
+### Which bits of each byte carry F0 to F9 and A0 to A3
+
+**Settled by.** Page 4 of the unretouched scan, read as a page image, prints each byte from BIT 0 on the left: `1 R0 R1 R2 F6 F7 F8 F9`, `0 x F0 F1 F2 F3 F4 F5` and `1 R0 R1 R2 A0 A1 A2 A3`. With D0 the most significant data line, that is page 2's F0 as the most significant bit and Table 1's A0 at 16 dB. The opposite labels in the held scan are a later hand's retyping, not TI's.
+
+**This package does.** Follows the prose, Table 1 and TI's page 4.

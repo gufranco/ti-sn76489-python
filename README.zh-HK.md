@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，屬性失敗為 **0**，在數據表中找到 **16** 處引文，**2** 款晶片，**603** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
+**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，屬性失敗為 **0**，在數據表中找到 **17** 處引文，**2** 款晶片，**603** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
 
 ```python
 import sn76489
@@ -239,6 +239,7 @@ python3 sn76489/core.test.py
 ## 參考資料
 
 - _SN76489AN Digital Complex Sound Generator_ 數據表，Texas Instruments，無日期。9 頁，342,317 位元組，SHA-256 `ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91`。它不可再分發，也不在本儲存庫中。目前已知的唯一副本位於 https://wiki.console5.com/tw/images/b/b0/SN76489.pdf ，前面有一個腳本無法通過的驗證頁面，所以請將你的副本放在 `docs/manufacturer/`，`python3 -m conformance.documents --check` 會拒絕任何其他檔案。
+- _SN76489AN Digital Complex Sound Generator_ 數據表的第二份掃描，屬同一印刷版本，沒有後人改動，Texas Instruments，無日期。9 頁，1,711,168 位元組，SHA-256 `af0a54394d3a92a50cbf25a13b384e8d44687cd2c58314d39cb15d58f6eba2d0`，位於 https://github.com/MajicDesigns/MD_SN76489/raw/30b974c97d99aface74a780dec1046b308f48317/media/doc/SN76489AN%20DataSheet.pdf 。它沒有文字層，所以按頁面圖像閱讀。它確定了 TI 在第 3 頁和第 4 頁實際印刷的內容。`python3 -m conformance.documents` 會把它取到 `docs/manufacturer/`。
 - SMS Power，_SN76489_，https://www.smspower.org/Development/SN76489 ，用於噪音移位暫存器和分立晶片的上電狀態。只取事實，沒有採用任何程式碼。
 - MAME，`src/devices/sound/sn76496.cpp`，提交 `92f8878050f78c55c6961b688d4960b078150c6a`，https://github.com/mamedev/mame ，用於數據表沒有說明的行為。只取事實，沒有採用任何程式碼。
 

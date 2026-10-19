@@ -201,13 +201,17 @@ ti-tms9918-python/  the board the census runs on, a pinned submodule
 
 ## Things that will bite you
 
-**The data sheet cannot be fetched by a script.** Its only known host answers
+**The held scan cannot be fetched by a script.** Its only known host answers
 with a challenge page, so `documents.py` verifies a copy you already hold in
-`docs/manufacturer/` and never tries to download it.
+`docs/manufacturer/` and never tries to download it. The unretouched scan sits
+in a public repository at a pinned commit, and `documents.py` fetches it.
 
-**A later hand marked pages 3 and 4 and retyped the data formats on page 4.**
-Those formats label the bits the opposite way to TI's prose. The prose and
-Table 1 decide.
+**A later hand marked pages 3 and 4 of the held scan.** It retyped the data
+formats on page 4, labelling the bits the opposite way to TI's prose, and
+retyped Table 4's second row. The second, unretouched scan in
+[`conformance/documents.json`](conformance/documents.json) shows what TI
+printed: page 4 agrees with the prose, and Table 4 gives tone 1's frequency
+and attenuation the same address.
 
 **A tone counter powers up anywhere in 0 to 1,023.** A write sets the period,
 not the count, so the first toggle after a write can be up to 1,024 periods
