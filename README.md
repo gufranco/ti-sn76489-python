@@ -45,10 +45,10 @@ A part powers up with every register scrambled, as a discrete part does. Two byt
 
 ## Install
 
-| Requirement | Version |
-|:--|:--|
-| Python | 3.12 or newer |
-| git | Any, to fetch the submodules |
+| Requirement | Version                      |
+| :---------- | :--------------------------- |
+| Python      | 3.12 or newer                |
+| git         | Any, to fetch the submodules |
 
 ```bash
 git clone --recurse-submodules https://github.com/gufranco/ti-sn76489-python.git
@@ -70,46 +70,46 @@ Releases follow [Semantic Versioning](https://semver.org/) and are cut from the 
 
 `sn76489.Chip(model, seed=UNSET_SEED)` builds one part. `model` is required. `seed` sets the power-on scramble of every register, counter, flip-flop and the shift register.
 
-| Model | Aliases | Input clock divided by | Input clocks to load a byte |
-|:--|:--|:--|:--|
-| `sn76489an` | `sn76489a`, `76489an`, `76489a` | 16 | 32 |
-| `sn76494n` | `sn76494`, `76494n`, `76494` | 2 | 4 |
+| Model       | Aliases                         | Input clock divided by | Input clocks to load a byte |
+| :---------- | :------------------------------ | :--------------------- | :-------------------------- |
+| `sn76489an` | `sn76489a`, `76489an`, `76489a` | 16                     | 32                          |
+| `sn76494n`  | `sn76494`, `76494n`, `76494`    | 2                      | 4                           |
 
 ### Calls
 
-| Call | Effect |
-|:--|:--|
+| Call           | Effect                                                                                                                                                                                                                                               |
+| :------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `write(value)` | One byte on the data bus with CE and WE strobed. A byte with bit 7 set addresses a register and sets its four low bits; one without it sets the six high bits of the tone period last addressed, or the four bits of any other register. READY falls |
-| `tick()` | One input clock |
-| `clock()` | One prescaled period: 16 input clocks on the SN76489AN, 2 on the SN76494N |
-| `reset()` | The part has no reset pin, so nothing changes. Returns the part. The part is defined only once software has written all eight registers: three periods, four attenuations and the noise control |
+| `tick()`       | One input clock                                                                                                                                                                                                                                      |
+| `clock()`      | One prescaled period: 16 input clocks on the SN76489AN, 2 on the SN76494N                                                                                                                                                                            |
+| `reset()`      | The part has no reset pin, so nothing changes. Returns the part. The part is defined only once software has written all eight registers: three periods, four attenuations and the noise control                                                      |
 
 ### State
 
-| Attribute | Meaning |
-|:--|:--|
-| `ready` | The READY pin: false from a write until the byte has loaded |
-| `loading` | Input clocks left before READY rises |
-| `periods` | The three tone periods, 10 bits each |
-| `steps` | The four attenuation steps, 0 for full volume to 15 for off |
-| `control` | The noise control: bit 2 selects white noise, bits 0 and 1 the rate |
-| `shift` | The 15-bit noise shift register |
-| `latched` | The register the last first byte addressed |
-| `bits` | Each channel's output bit: the three flip-flops, then bit 0 of the shift register |
-| `gains` | Each channel's gain from Table 1's weights, 1.0 at step 0 and 0.0 when off |
-| `level` | The sum of the gains of the channels whose bit is high |
-| `ticks` | Input clocks since the part was built |
-| `model` | The canonical model name |
-| `part` | The `Model` record: `prescale`, `load_clocks`, `aliases`, `summary` |
+| Attribute | Meaning                                                                           |
+| :-------- | :-------------------------------------------------------------------------------- |
+| `ready`   | The READY pin: false from a write until the byte has loaded                       |
+| `loading` | Input clocks left before READY rises                                              |
+| `periods` | The three tone periods, 10 bits each                                              |
+| `steps`   | The four attenuation steps, 0 for full volume to 15 for off                       |
+| `control` | The noise control: bit 2 selects white noise, bits 0 and 1 the rate               |
+| `shift`   | The 15-bit noise shift register                                                   |
+| `latched` | The register the last first byte addressed                                        |
+| `bits`    | Each channel's output bit: the three flip-flops, then bit 0 of the shift register |
+| `gains`   | Each channel's gain from Table 1's weights, 1.0 at step 0 and 0.0 when off        |
+| `level`   | The sum of the gains of the channels whose bit is high                            |
+| `ticks`   | Input clocks since the part was built                                             |
+| `model`   | The canonical model name                                                          |
+| `part`    | The `Model` record: `prescale`, `load_clocks`, `aliases`, `summary`               |
 
 ### Module contents
 
-| Name | Content |
-|:--|:--|
-| `sn76489.MODELS` | The two `Model` records, keyed by canonical name |
+| Name                        | Content                                                                          |
+| :-------------------------- | :------------------------------------------------------------------------------- |
+| `sn76489.MODELS`            | The two `Model` records, keyed by canonical name                                 |
 | `sn76489.UnknownModelError` | Raised for a missing or unknown model name. The message lists the names accepted |
-| `sn76489.UNSET_SEED` | The seed a part is scrambled from when none is given |
-| `sn76489.__version__` | The installed version |
+| `sn76489.UNSET_SEED`        | The seed a part is scrambled from when none is given                             |
+| `sn76489.__version__`       | The installed version                                                            |
 
 ```python
 import sn76489
@@ -193,19 +193,19 @@ SG-1000 software writes the sound port only once its processor and video chip ar
 
 Two properties gate the run: the model raises no exception on any image, and the shift register never reaches zero. Writes made before the previous byte finished loading are counted and named per image but gate nothing, because the data sheet does not say what the chip does with them.
 
-| Observation | Images, of 348 |
-|:--|:--|
-| Never wrote the sound port | 35 |
-| Latched a tone period, tones 1, 2 and 3 | 174, 140, 140 |
-| Latched an attenuation, tones 1, 2 and 3 and noise | 312, 312, 311, 312 |
-| Latched the noise control | 49 |
-| Sent a second byte after a period latch, tones 1, 2 and 3 | 174, 140, 140 |
-| Sent a second byte after an attenuation latch, tones 1 and 2 and noise | 4, 4, 2 |
-| Sent a second byte after the noise control latch | 4 |
-| Wrote noise control 0, 3, 4, 5, 6 and 7 | 22, 8, 4, 3, 3, 13 |
-| Wrote noise control 1 or 2 | 0 |
-| Turned a channel off with attenuation 15 | 313 |
-| Wrote a period of zero | 38 |
+| Observation                                                            | Images, of 348     |
+| :--------------------------------------------------------------------- | :----------------- |
+| Never wrote the sound port                                             | 35                 |
+| Latched a tone period, tones 1, 2 and 3                                | 174, 140, 140      |
+| Latched an attenuation, tones 1, 2 and 3 and noise                     | 312, 312, 311, 312 |
+| Latched the noise control                                              | 49                 |
+| Sent a second byte after a period latch, tones 1, 2 and 3              | 174, 140, 140      |
+| Sent a second byte after an attenuation latch, tones 1 and 2 and noise | 4, 4, 2            |
+| Sent a second byte after the noise control latch                       | 4                  |
+| Wrote noise control 0, 3, 4, 5, 6 and 7                                | 22, 8, 4, 3, 3, 13 |
+| Wrote noise control 1 or 2                                             | 0                  |
+| Turned a channel off with attenuation 15                               | 313                |
+| Wrote a period of zero                                                 | 38                 |
 
 Across all images the part took 1,629,574 writes. 117,926 of them on retail images, and 873,222 on the rest, arrived before the previous byte finished loading.
 
@@ -219,13 +219,13 @@ Every value the data sheet does not print sits under `notStated` in the same fil
 
 ## Working on it
 
-| Need | Where |
-|:--|:--|
-| Every gate and the order to run them | [CONTRIBUTING.md](CONTRIBUTING.md) |
-| The same material for a coding agent | [AGENTS.md](AGENTS.md) |
-| The standard this repository shares with the rest of the family | [FAMILY.md](FAMILY.md) |
-| Bug reports | [GitHub Issues](https://github.com/gufranco/ti-sn76489-python/issues) |
-| Security reports | [SECURITY.md](SECURITY.md) |
+| Need                                                            | Where                                                                 |
+| :-------------------------------------------------------------- | :-------------------------------------------------------------------- |
+| Every gate and the order to run them                            | [CONTRIBUTING.md](CONTRIBUTING.md)                                    |
+| The same material for a coding agent                            | [AGENTS.md](AGENTS.md)                                                |
+| The standard this repository shares with the rest of the family | [FAMILY.md](FAMILY.md)                                                |
+| Bug reports                                                     | [GitHub Issues](https://github.com/gufranco/ti-sn76489-python/issues) |
+| Security reports                                                | [SECURITY.md](SECURITY.md)                                            |
 
 ```bash
 uvx ruff@0.16.3 format --check .
@@ -238,8 +238,8 @@ Each module has a test file beside it, named after it, and each runs on its own 
 
 ## References
 
-- *SN76489AN Digital Complex Sound Generator* data sheet, Texas Instruments, undated. 9 pages, 342,317 bytes, SHA-256 `ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91`. It is not redistributable and is not in this repository. Its only known copy is at https://wiki.console5.com/tw/images/b/b0/SN76489.pdf, behind a challenge page that a script cannot pass, so put your copy in `docs/manufacturer/` and `python3 -m conformance.documents --check` refuses any other file.
-- SMS Power, *SN76489*, https://www.smspower.org/Development/SN76489, for the noise shift register and the power-on state of discrete parts. Facts only; no code is taken.
+- _SN76489AN Digital Complex Sound Generator_ data sheet, Texas Instruments, undated. 9 pages, 342,317 bytes, SHA-256 `ad2b99beee0f4f7979828c4f3d9f2bf013deac39fa6263309875232e78a99f91`. It is not redistributable and is not in this repository. Its only known copy is at https://wiki.console5.com/tw/images/b/b0/SN76489.pdf, behind a challenge page that a script cannot pass, so put your copy in `docs/manufacturer/` and `python3 -m conformance.documents --check` refuses any other file.
+- SMS Power, _SN76489_, https://www.smspower.org/Development/SN76489, for the noise shift register and the power-on state of discrete parts. Facts only; no code is taken.
 - MAME, `src/devices/sound/sn76496.cpp` at commit `92f8878050f78c55c6961b688d4960b078150c6a`, https://github.com/mamedev/mame, for behaviour the data sheet leaves unstated. Facts only; no code is taken.
 
 ## Citing this
