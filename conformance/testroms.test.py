@@ -53,7 +53,11 @@ A_PROGRAM = a_program("  CHANNEL - 1")
 
 
 def a_record(
-    folder: Path, *images: bytes, verdict: list[str] | None = None, channels: Any = None
+    folder: Path,
+    *images: bytes,
+    verdict: list[str] | None = None,
+    channels: Any = None,
+    measured: dict[str, Any] | None = None,
 ) -> Path:
     listed: list[dict[str, Any]] = [
         {
@@ -64,6 +68,7 @@ def a_record(
             "every": 1,
             "verdict": verdict,
             "channels": channels,
+            **(measured or {}),
         }
         for index, image in enumerate(images)
     ]
@@ -127,6 +132,18 @@ class RecordedVerdictTest(unittest.TestCase):
 
         # Assert
         self.assertRaises(AssertionError, attempt)
+
+
+class RecordedStimulusTest(unittest.TestCase):
+    def test_the_sound_test_leaves_the_part_at_the_values_its_screen_starts_with(self) -> None:
+        # Arrange
+        held = testroms.entry("sound-test-1-1")
+
+        # Act
+        found = (held["final"]["periods"], held["final"]["steps"])
+
+        # Assert
+        self.assertEqual(found, ([0x3FF, 0x3FF, 0x3FF], [0xF, 0xF, 0xF, 0xF]))
 
 
 class ReportedTest(unittest.TestCase):
@@ -232,7 +249,7 @@ class MainTest(unittest.TestCase):
         # Arrange
         folder = Path(tempfile.mkdtemp())
         found = self.measured()
-        record = a_record(folder, A_PROGRAM, verdict=found["verdict"], channels=found["channels"])
+        record = a_record(folder, A_PROGRAM, measured=found)
 
         # Act
         code = testroms.main([str(held_in(folder, A_PROGRAM))], record)
@@ -267,9 +284,7 @@ class MainTest(unittest.TestCase):
         folder = Path(tempfile.mkdtemp())
         found = self.measured()
         other = a_program("  OTHER")
-        record = a_record(
-            folder, A_PROGRAM, other, verdict=found["verdict"], channels=found["channels"]
-        )
+        record = a_record(folder, A_PROGRAM, other, measured=found)
 
         # Act
         code = testroms.main([str(held_in(folder, A_PROGRAM))], record)
@@ -281,7 +296,7 @@ class MainTest(unittest.TestCase):
         # Arrange
         folder = Path(tempfile.mkdtemp())
         found = self.measured()
-        record = a_record(folder, A_PROGRAM, verdict=found["verdict"], channels=found["channels"])
+        record = a_record(folder, A_PROGRAM, measured=found)
         held_in(folder, A_PROGRAM)
 
         # Act

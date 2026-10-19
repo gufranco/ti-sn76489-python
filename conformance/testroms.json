@@ -56,6 +56,16 @@
           "periods": [179, 179, 179],
           "control": 4
         }
+      },
+      "pages": {
+        "SOUND TEST": "stimulus only: the program sounds each channel in turn for a person to hear and reports no verdict. What is held here is what the part was set to while each CHANNEL screen was up: period 0B3h on the named tone channel at attenuation 0, then white noise, and every other channel off",
+        "SCRATCH RAM, VDP V-RAM": "the program's own verdicts, held by ti-tms9918-python; recorded here only as the screens it showed"
+      },
+      "writes": 22,
+      "final": {
+        "steps": [0, 15, 15, 15],
+        "periods": [51, 179, 179],
+        "control": 4
       }
     },
     {
@@ -63,9 +73,32 @@
       "title": "Sound Test 1.1, by Nicolas Warren",
       "sha256": "66d155741e24e42a946731965187725e48c1974d04cd5d183a086fe9078feb61",
       "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
-      "exercises": "an interactive editor for the three tone periods and volumes and the noise type, rate and volume, driven by the joypad; it reports no verdict of its own",
+      "exercises": "stimulus only: an interactive editor for the three tone periods and volumes and the noise type, rate and volume, driven by the joypad; it reports no verdict. With no input it rewrites its starting values every frame, and the screen it draws, Freq: $3FF and Vol: $F on every channel, is what the part has to hold",
+      "outcome": "run",
+      "heldBy": [
+        "conformance/testroms.test.py::RecordedStimulusTest.test_the_sound_test_leaves_the_part_at_the_values_its_screen_starts_with"
+      ],
+      "frames": 60,
+      "every": 10,
+      "board": "member 2's SG-1000 board. The program was written for a machine with 8K of RAM and Mode 4, and draws nothing readable here; with no input it writes its starting values every frame from the tenth on, 9F 8F 3F, BF AF 3F, DF CF 3F, then FF and a noise byte, EFh on the first pass and E2h after",
+      "verdict": [],
+      "channels": {},
+      "writes": 562,
+      "final": {
+        "steps": [15, 15, 15, 15],
+        "periods": [1023, 1023, 1023],
+        "control": 2
+      }
+    },
+    {
+      "id": "test-suite-0-32-audio",
+      "title": "Test Suite 0.32 by sverx, its Audio Tests page",
+      "sha256": "18c08b24df7339efe8339cd16a9a1bd863cfeac393cc9dde988b8dd35d395a41",
+      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
+      "exercises": "stimulus only: PSGlib playback of each channel and a volume ramp, chosen from a Mode 4 menu with the joypad; no verdict in the image",
       "outcome": "hosted",
-      "needs": "sega-sms-python"
+      "needs": "sega-sms-python",
+      "why": "reaching the page takes joypad presses through a menu drawn in Mode 4; member 2's board has neither the controller ports nor Mode 4"
     }
   ]
 }

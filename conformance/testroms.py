@@ -95,7 +95,12 @@ def heard(image: bytes, frames: int, every: int) -> dict[str, Any]:
         seen = list(dict.fromkeys([*seen, *shown]))
         staged = {row: state(running.part) for row in shown if row.startswith(STAGE)}
         channels = {**channels, **staged}
-    return {"verdict": seen, "channels": channels}
+    return {
+        "verdict": seen,
+        "channels": channels,
+        "writes": running.heard.writes,
+        "final": state(running.part),
+    }
 
 
 def options(argv: Sequence[str]) -> tuple[bool, list[Path]] | None:
@@ -114,12 +119,13 @@ def places_from(given: list[Path]) -> list[Path]:
 
 
 def judged(one: dict[str, Any], found: dict[str, Any]) -> bool:
-    same = bool(found["verdict"] == one.get("verdict") and found["channels"] == one.get("channels"))
+    same = all(found[key] == one.get(key) for key in found)
     print(f"{'ran' if same else 'DIFFERS'} {one['id']}: {len(found['verdict'])} lines")
     for line in found["verdict"]:
         print(f"  {line}")
     for row, held in found["channels"].items():
         print(f"  {row}: {json.dumps(held, sort_keys=True)}")
+    print(f"  {found['writes']} writes, left at {json.dumps(found['final'], sort_keys=True)}")
     return same
 
 

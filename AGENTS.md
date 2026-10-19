@@ -86,17 +86,23 @@ Any other mention names the part by its number.
 cartridge that exercises this part, by SHA-256, as FAMILY.md's fifth
 requirement asks.
 
-- **Run: the SG-1000 M2 check program**, from the SG-1000 set's
+Neither cartridge reports a verdict about sound: both are stimulus only, meant
+to be heard. What each run holds is what the part was left set to, against what
+the program itself says it set.
+
+- **Run, stimulus only: the SG-1000 M2 check program**, from the SG-1000 set's
   `5 Programs & Tools.zip` under `~/sms-artifacts/htgdb/`. It boots on member
   2's board with this part on the sound port.
   [`conformance/testroms.py`](conformance/testroms.py) reads its screen every ten
   frames for 480 frames and, while a `CHANNEL - n` screen is up, keeps what the
   part holds: the four attenuation steps, the three periods and the noise
-  control. On each of the four screens only the channel it names is sounding.
-- **Hosted: Sound Test 1.1** from the Master EverDrive set's
-  `5 Tools & Service Test Carts.zip`. It is an interactive register editor that
-  reports no verdict and needs a whole machine, so it waits on
-  `sega-sms-python`.
+  control. On each of the four screens only the channel it names is sounding,
+  at period `0B3h`, then white noise.
+- **Run, stimulus only: Sound Test 1.1** from the Master EverDrive set's
+  `5 Tools & Service Test Carts.zip`. It is an interactive register editor. With
+  no input it writes its starting values every frame, and after 60 frames the
+  part holds period `3FFh` and attenuation `Fh` on every channel, the values its
+  own screen opens with.
 
 ```bash
 python3 -m conformance.testroms [--write] <zip, folder or image ...>
