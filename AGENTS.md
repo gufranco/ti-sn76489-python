@@ -80,6 +80,33 @@ sweeps for. The SG-1000 is named because its library is the census's oracle.
 The SC-3000H is named because SMS Power's cited measurement was taken on one.
 Any other mention names the part by its number.
 
+## Test cartridges
+
+[`conformance/testroms.json`](conformance/testroms.json) lists every test
+cartridge that exercises this part, by SHA-256, as FAMILY.md's fifth
+requirement asks.
+
+- **Run: the SG-1000 M2 check program**, from the SG-1000 set's
+  `5 Programs & Tools.zip` under `~/sms-artifacts/htgdb/`. It boots on member
+  2's board with this part on the sound port.
+  [`conformance/testroms.py`](conformance/testroms.py) reads its screen every ten
+  frames for 480 frames and, while a `CHANNEL - n` screen is up, keeps what the
+  part holds: the four attenuation steps, the three periods and the noise
+  control. On each of the four screens only the channel it names is sounding.
+- **Hosted: Sound Test 1.1** from the Master EverDrive set's
+  `5 Tools & Service Test Carts.zip`. It is an interactive register editor that
+  reports no verdict and needs a whole machine, so it waits on
+  `sega-sms-python`.
+
+```bash
+python3 -m conformance.testroms [--write] <zip, folder or image ...>
+```
+
+With no argument it reads the folders and zips named in `TEST_CARTRIDGES`. With
+none present it says so and exits 2, and CI turns that into a notice.
+[`conformance/testroms.test.py`](conformance/testroms.test.py) replays the
+recorded verdict with no image present.
+
 ## Every gate, in the order to run them
 
 ```bash
@@ -183,6 +210,8 @@ conformance/
   census.py         boots every SG-1000 image in a library you own and counts what it writes
   corpus.json       those counts, holding nothing from any cartridge
   corpus.py         replays them
+  testroms.json     every test cartridge that exercises the part, and the verdict of each one run
+  testroms.py       runs the ones you hold on member 2's board and keeps what the part was set to
   documents.json    the data sheet, by digest
   documents.py      checks a copy you hold and refuses any other file
   hardware.json     TI's data sheet, fact by fact, and every value it does not print

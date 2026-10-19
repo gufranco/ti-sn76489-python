@@ -1,0 +1,71 @@
+{
+  "cartridges": [
+    {
+      "id": "sg-1000-m2-check",
+      "title": "SG-1000 M2 Check Program (1984)",
+      "sha256": "1e2af6adb98f17f228dbd2daf3ae7896318127de308464f8f871a62f25429718",
+      "source": "the SG-1000 set's 5 Programs & Tools.zip under ~/sms-artifacts/htgdb/, member SG-1000 M2 Test Cartridge (Japan).sg",
+      "exercises": "its sound screen sounds each tone channel and then the noise channel in turn, naming the one it means on screen",
+      "outcome": "run",
+      "heldBy": [
+        "conformance/testroms.test.py::RecordedVerdictTest.test_the_check_program_reaches_its_sound_screens_for_all_four_channels",
+        "conformance/testroms.test.py::RecordedVerdictTest.test_and_on_each_one_only_the_channel_it_names_is_sounding"
+      ],
+      "frames": 480,
+      "every": 10,
+      "verdict": [
+        "SG-1000 M2 CHECK PROGRA",
+        "SCRATCH RAM OK",
+        "VDP V-RAM ALL IC OK",
+        "COLOR TEST",
+        "0 1 E F 6 8 9 A B C 2 3 D 4 5 7",
+        "SOUND TEST",
+        "CHANNEL - 1",
+        "CHANNEL - 2",
+        "CHANNEL - 3",
+        "CHANNEL - 4",
+        "I / O   TEST",
+        "1P         2P",
+        "UP    OFF  UP    OFF",
+        "DOWN  OFF  DOWN  OFF",
+        "LEFT  OFF  LEFT  OFF",
+        "RIGHT OFF  RIGHT OFF",
+        "SHOTL OFF  SHOTL OFF",
+        "SHOTR OFF  SHOTR OFF",
+        "HOLD SW  RUN",
+        "EXTENSION PORT BAD"
+      ],
+      "channels": {
+        "CHANNEL - 1": {
+          "steps": [0, 15, 15, 15],
+          "periods": [179, 308, 390],
+          "control": 0
+        },
+        "CHANNEL - 2": {
+          "steps": [15, 0, 15, 15],
+          "periods": [179, 179, 390],
+          "control": 0
+        },
+        "CHANNEL - 3": {
+          "steps": [15, 15, 0, 15],
+          "periods": [179, 179, 179],
+          "control": 0
+        },
+        "CHANNEL - 4": {
+          "steps": [15, 15, 15, 0],
+          "periods": [179, 179, 179],
+          "control": 4
+        }
+      }
+    },
+    {
+      "id": "sound-test-1-1",
+      "title": "Sound Test 1.1, by Nicolas Warren",
+      "sha256": "66d155741e24e42a946731965187725e48c1974d04cd5d183a086fe9078feb61",
+      "source": "~/sms-artifacts/htgdb/Master EverDrive/5 Tools & Service Test Carts.zip",
+      "exercises": "an interactive editor for the three tone periods and volumes and the noise type, rate and volume, driven by the joypad; it reports no verdict of its own",
+      "outcome": "hosted",
+      "needs": "sega-sms-python"
+    }
+  ]
+}
