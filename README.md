@@ -8,7 +8,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures, **17** quotes located in the data sheet, **2** parts, **648** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures, **17** quotes located in the data sheet, **2** parts, **692** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import sn76489
@@ -186,7 +186,7 @@ The data sheet never describes the shift register. Its width, its taps and where
 ## The census
 
 ```bash
-python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 SG-1000 software writes the sound port only once its processor and video chip are running, so the census boots every image on [`ti-tms9918-python`](https://github.com/gufranco/ti-tms9918-python)'s SG-1000 board, with the `zilog-z80-python` processor and this part on ports `0x40` to `0x7F`, ticked once per processor clock. It accepts directories, zip archives and single images, and counts each distinct image once by digest. It prints a summary, writes [`conformance/corpus.json`](conformance/corpus.json), and exits 1 when a property breaks.

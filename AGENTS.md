@@ -91,7 +91,7 @@ to be heard. What each run holds is what the part was left set to, against what
 the program itself says it set.
 
 - **Run, stimulus only: the SG-1000 M2 check program**, from the SG-1000 set's
-  `5 Programs & Tools.zip` under `~/sms-artifacts/htgdb/`. It boots on member
+  `5 Programs & Tools.zip`, kept at `external/SG-1000/`. It boots on member
   2's board with this part on the sound port.
   [`conformance/testroms.py`](conformance/testroms.py) reads its screen every ten
   frames for 480 frames and, while a `CHANNEL - n` screen is up, keeps what the
@@ -108,10 +108,33 @@ the program itself says it set.
 python3 -m conformance.testroms [--write] <zip, folder or image ...>
 ```
 
-With no argument it reads the folders and zips named in `TEST_CARTRIDGES`. With
+With no argument it reads the folders and zips named in `TEST_CARTRIDGES`,
+and with that unset, everything under `external/`. With
 none present it says so and exits 2, and CI turns that into a notice.
 [`conformance/testroms.test.py`](conformance/testroms.test.py) replays the
 recorded verdict with no image present.
+
+## Files kept in `external/`
+
+Everything this member reads and may not ship sits in `external/`, which git
+ignores and Dropbox is told to leave alone, per FAMILY.md's "Where the files a
+member reads are kept". [`artifacts.manifest.json`](artifacts.manifest.json)
+names all 9 by size, CRC32, MD5, SHA-1 and SHA-256:
+
+- `external/SG-1000/`, the eight archives of the SG-1000 pack of
+  2022-05-20, which the census walks whole. `5 Programs & Tools.zip` among
+  them holds the SG-1000 M2 check program the cartridge runner reads.
+- `external/Master EverDrive/5 Tools & Service Test Carts.zip`, from the
+  Master EverDrive pack of 2022-05-04, for the SMS Sound Test 1.1.
+
+```bash
+python3 -m conformance.external
+python3 -m conformance.external --describe external/<file>
+```
+
+The first says which are here, verified, missing or wrong. The second prints
+the manifest entry for a file being added, which gets its entry in the same
+change.
 
 ## Every gate, in the order to run them
 
@@ -141,7 +164,7 @@ python3 -m conformance.quotes
 And, with an SG-1000 library present, the one that walks it:
 
 ```bash
-python3 -m conformance.census <library> [library ...] [--frames N] [--jobs N]
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 Everything under [`conformance/`](conformance) runs as a module. Run as a
@@ -231,7 +254,10 @@ conformance/
   family_*.test.py  the family standard, held as tests, one topic a file
   family_member.py  what this member answers to them
   family_shared.py  what more than one of them reads
+  external.py       which files in external/ are here, verified, missing or wrong
 ti-tms9918-python/  the board the census runs on, a pinned submodule
+external/           the SG-1000 pack and the test cartridges the census and the runner read, never committed
+artifacts.manifest.json  every file in external/, by size and every digest
 ```
 
 ## Things that will bite you

@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，屬性失敗為 **0**，在數據表中找到 **17** 處引文，**2** 款晶片，**648** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
+**348** 個不同的 SG-1000 映像檔各啟動 **600** 幀，屬性失敗為 **0**，在數據表中找到 **17** 處引文，**2** 款晶片，**692** 個測試，**100%** 語句和分支覆蓋率，沒有依賴套件
 
 ```python
 import sn76489
@@ -186,7 +186,7 @@ print(shifts, hex(part.shift))
 ## 普查
 
 ```bash
-python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 SG-1000 軟件要等其處理器和視像晶片運行後才會寫入聲音埠，所以普查在 [`ti-tms9918-python`](https://github.com/gufranco/ti-tms9918-python) 的 SG-1000 主機板上啟動每個映像檔，配合 `zilog-z80-python` 處理器，並將本晶片置於埠 `0x40` 至 `0x7F`，每個處理器時鐘推進一次。它接受目錄、zip 封存檔和單個映像檔，並按摘要值將每個不同的映像檔只計算一次。它會列印摘要，寫入 [`conformance/corpus.json`](conformance/corpus.json)，並在任何屬性失敗時以 1 退出。

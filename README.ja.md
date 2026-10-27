@@ -8,7 +8,7 @@ Texas InstrumentsのSN76489AN、SN76494NサウンドジェネレータをPython�
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**17**件、**2**品種、テスト**648**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
+異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**17**件、**2**品種、テスト**692**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
 ```python
 import sn76489
@@ -186,7 +186,7 @@ print(shifts, hex(part.shift))
 ## 全数調査
 
 ```bash
-python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 SG-1000のソフトウェアは、プロセッサとビデオチップが動き出してからでないとサウンドポートに書き込みません。そのため全数調査は、すべてのイメージを[`ti-tms9918-python`](https://github.com/gufranco/ti-tms9918-python)のSG-1000ボード上で起動します。プロセッサは`zilog-z80-python`で、このチップをポート`0x40`から`0x7F`に置き、プロセッサのクロックごとに1回ティックします。ディレクトリ、ZIPアーカイブ、単体のイメージを受け付け、異なるイメージをダイジェストで1回ずつ数えます。概要を出力し、[`conformance/corpus.json`](conformance/corpus.json)を書き出し、性質が破れた場合は終了コード1で終了します。

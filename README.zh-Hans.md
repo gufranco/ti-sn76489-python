@@ -8,7 +8,7 @@
 [![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 
-**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败，在数据手册中定位到 **17** 处引文，**2** 款芯片，**648** 个测试，**100%** 语句和分支覆盖率，无依赖
+**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败，在数据手册中定位到 **17** 处引文，**2** 款芯片，**692** 个测试，**100%** 语句和分支覆盖率，无依赖
 
 ```python
 import sn76489
@@ -186,7 +186,7 @@ print(shifts, hex(part.shift))
 ## 普查
 
 ```bash
-python3 -m conformance.census /path/to/sg1000/library --frames 600 --jobs 10
+python3 -m conformance.census "external/SG-1000" --frames 600 --jobs 10
 ```
 
 SG-1000 软件只有在其处理器和视频芯片运行之后才会写入声音端口，因此普查在 [`ti-tms9918-python`](https://github.com/gufranco/ti-tms9918-python) 的 SG-1000 主板上启动每个镜像，使用 `zilog-z80-python` 处理器，并将本芯片置于端口 `0x40` 到 `0x7F`，每个处理器时钟推进一次。它接受目录、zip 归档和单个镜像，并按摘要对每个不同的镜像只计数一次。它打印一份摘要，写入 [`conformance/corpus.json`](conformance/corpus.json)，并在某个属性被破坏时以 1 退出。
