@@ -4,9 +4,11 @@ Texas InstrumentsのSN76489AN、SN76494NサウンドジェネレータをPython�
 
 [English](README.md) | 日本語 | [简体中文](README.zh-Hans.md) | [繁體中文（香港）](README.zh-HK.md)
 
-[![CI](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml/badge.svg)](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python)](https://github.com/gufranco/ti-sn76489-python/releases)
-[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![ci](https://img.shields.io/github/actions/workflow/status/gufranco/ti-sn76489-python/ci.yml?branch=main&style=flat-square&label=ci)](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml)
+[![release](https://img.shields.io/github/v/release/gufranco/ti-sn76489-python?style=flat-square&label=release)](https://github.com/gufranco/ti-sn76489-python/releases/latest)
+[![coverage](https://img.shields.io/badge/coverage-100%25-brightgreen?style=flat-square)](https://github.com/gufranco/ti-sn76489-python/actions/workflows/ci.yml)
+[![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/gufranco/ti-sn76489-python?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/gufranco/ti-sn76489-python)
+[![license](https://img.shields.io/github/license/gufranco/ti-sn76489-python?style=flat-square&label=license)](LICENSE)
 
 異なるSG-1000イメージ**348**本をそれぞれ**600**フレーム起動、性質の不合格**0**件、データシート内で所在を確認した引用**17**件、**2**品種、テスト**701**件、ステートメントとブランチのカバレッジ**100%**、依存関係なし
 
@@ -15,12 +17,10 @@ import sn76489
 
 part = sn76489.Chip("sn76489an")
 
-
 def write(value):
     part.write(value)
     while not part.ready:
         part.tick()
-
 
 for value in (0x85, 0x00, 0x90, 0xBF, 0xDF, 0xFF):
     write(value)
