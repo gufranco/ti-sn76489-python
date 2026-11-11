@@ -10,7 +10,7 @@ English | [日本語](README.ja.md) | [简体中文](README.zh-Hans.md) | [繁�
 [![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/gufranco/ti-sn76489-python?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/gufranco/ti-sn76489-python)
 [![license](https://img.shields.io/github/license/gufranco/ti-sn76489-python?style=flat-square&label=license)](LICENSE)
 
-**348** distinct SG-1000 images booted for **600** frames each, **0** property failures, **17** quotes located in the data sheet, **2** parts, **701** tests, **100%** statement and branch coverage, no dependencies
+**348** distinct SG-1000 images booted for **600** frames each, **0** property failures, **17** quotes located in the data sheet, **2** parts, **702** tests, **100%** statement and branch coverage, no dependencies
 
 ```python
 import sn76489
