@@ -10,7 +10,7 @@
 [![openssf scorecard](https://img.shields.io/ossf-scorecard/github.com/gufranco/ti-sn76489-python?style=flat-square&label=openssf%20scorecard)](https://scorecard.dev/viewer/?uri=github.com/gufranco/ti-sn76489-python)
 [![license](https://img.shields.io/github/license/gufranco/ti-sn76489-python?style=flat-square&label=license)](LICENSE)
 
-**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败，在数据手册中定位到 **17** 处引文，**2** 款芯片，**701** 个测试，**100%** 语句和分支覆盖率，无依赖
+**348** 个不同的 SG-1000 镜像各启动 **600** 帧，**0** 个属性失败，在数据手册中定位到 **17** 处引文，**2** 款芯片，**702** 个测试，**100%** 语句和分支覆盖率，无依赖
 
 ```python
 import sn76489
