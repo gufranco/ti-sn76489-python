@@ -17,10 +17,12 @@ import sn76489
 
 part = sn76489.Chip("sn76489an")
 
+
 def write(value):
     part.write(value)
     while not part.ready:
         part.tick()
+
 
 for value in (0x85, 0x00, 0x90, 0xBF, 0xDF, 0xFF):
     write(value)
